@@ -1,38 +1,27 @@
+import { useState } from 'react'
 import Navbar from './components/Navbar'
 import MazeCanvas from './components/MazeCanvas'
 import StatusPanel from './components/StatusPanel'
 
-function App() {
+export default function App() {
+  const [faseAtual, setFaseAtual] = useState('labirinto01')
 
   return (
-    <div className="min-h-screen bg-[#0f1117] text-white flex flex-col">
-
-      {/* Barra de navegação */}
-      <Navbar />
-
-      {/* Conteúdo principal */}
-      <main className="flex flex-1 gap-4 p-4">
-
-        {/* Painel esquerdo - labirinto */}
-        <div className="flex-1 bg-[#1a1d2e] rounded-xl p-4">
+    <div style={{ backgroundColor: '#0f1117', height: '100vh', display: 'flex', flexDirection: 'column', color: 'white' }}>
+      <Navbar faseAtual={faseAtual} onFaseChange={setFaseAtual} />
+      
+      <main style={{ display: 'flex', flex: 1, gap: '1rem', padding: '1rem' }}>
+        <div style={{ flex: 1, backgroundColor: '#1a1d2e', borderRadius: '12px', padding: '1rem' }}>
           <MazeCanvas />
-          <h1>teste</h1>
         </div>
-
-        {/* Painel direito - status */}
-        <div className="w-72 bg-[#1a1d2e] rounded-xl p-4">
+        <div style={{ width: '288px', backgroundColor: '#1a1d2e', borderRadius: '12px', padding: '1rem' }}>
           <StatusPanel />
         </div>
-
       </main>
 
-      {/* Rodapé */}
-      <footer className="text-center text-xs text-gray-500 py-2">
+      <footer style={{ textAlign: 'center', fontSize: '12px', color: '#6b7280', padding: '8px' }}>
         MicroMouse
       </footer>
-
-    </div>)
-
+    </div>
+  )
 }
-
-export default App
