@@ -1,0 +1,18 @@
+site_name: Projeto PI1 - Grupo 02
+
+theme:
+  name: material
+
+nav:
+  - Início: index.md
+  - Cronograma: pages/cronograma/cronograma.md
+  - EAP do Projeto: pages/eap/eap.md
+  - Equipes:
+    - Eletrônica: pages/eletronica/eletronica.md
+    - Energia: pages/energia/energia.md
+    - Estrutura: pages/estrutura/estrutura.md
+    - Software:
+      - Arquitetura de Software: pages/software/arquitetura.md
+
+exclude_docs: |
+  relatorio/

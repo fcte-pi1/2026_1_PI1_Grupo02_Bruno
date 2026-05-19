@@ -1,0 +1,30 @@
+name: Deploy MkDocs
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.x
+
+      - run: |
+          python -m venv venv
+          source venv/bin/activate
+          pip install --upgrade pip
+          pip install mkdocs mkdocs-material
+
+      - run: |
+          source venv/bin/activate
+          mkdocs gh-deploy --force
