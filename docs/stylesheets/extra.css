@@ -1,0 +1,16 @@
+.md-header__inner {
+  justify-content: center;
+  min-height: 40px;
+}
+.md-header {
+  max-height: 45px;
+}
+.md-tabs__list {
+  justify-content: center;
+}
+
+.md-header__title {
+  font-weight: 400;
+  font-size: 1.3rem;
+  letter-spacing: 2px;
+}

@@ -1,18 +1,34 @@
-site_name: Projeto PI1 - Grupo 02
+site_name: RataTuring
 
 theme:
   name: material
+  features:
+      - navigation.tabs
 
+  palette:
+    - scheme: slate
+      primary: lime
+      accent: pink
+plugins: []
+repo_name: PI1 - Grupo 02
+repo_url: https://github.com/fcte-pi1/2026_1_PI1_Grupo02_Bruno.git
 nav:
   - Início: index.md
+  - Equipe: pages/equipes.md
   - Cronograma: pages/cronograma/cronograma.md
   - EAP do Projeto: pages/eap/eap.md
-  - Equipes:
+  - Documentação:
     - Eletrônica: pages/eletronica/eletronica.md
     - Energia: pages/energia/energia.md
     - Estrutura: pages/estrutura/estrutura.md
-    - Software:
+    - Software: 
       - Arquitetura de Software: pages/software/arquitetura_software.md
-
+  - Entregas:
+    - Ponto de Controle 1: pages/entregas/pc1.md
+    - Ponto de Controle 2: pages/entregas/pc2.md
+    - Ponto de Controle 3: pages/entregas/pc3.md
+extra_css:
+  - stylesheets/extra.css
 exclude_docs: |
   relatorio/
+  README.md
