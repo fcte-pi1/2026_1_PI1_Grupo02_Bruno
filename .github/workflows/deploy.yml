@@ -19,12 +19,6 @@ jobs:
         with:
           python-version: 3.x
 
-      - run: |
-          python -m venv venv
-          source venv/bin/activate
-          pip install --upgrade pip
-          pip install mkdocs mkdocs-material
+      - run: pip install mkdocs mkdocs-material
 
-      - run: |
-          source venv/bin/activate
-          mkdocs gh-deploy --force
+      - run: mkdocs gh-deploy --force
