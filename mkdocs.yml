@@ -12,7 +12,7 @@ nav:
     - Energia: pages/energia/energia.md
     - Estrutura: pages/estrutura/estrutura.md
     - Software:
-      - Arquitetura de Software: pages/software/arquitetura.md
+      - Arquitetura de Software: pages/software/arquitetura_software.md
 
 exclude_docs: |
   relatorio/
