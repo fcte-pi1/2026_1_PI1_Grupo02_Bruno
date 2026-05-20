@@ -2,6 +2,7 @@ site_name: RataTuring
 
 theme:
   name: material
+  language: pt-BR
   features:
       - navigation.tabs
 
@@ -9,6 +10,8 @@ theme:
     - scheme: slate
       primary: lime
       accent: pink
+extra:
+  generator: false
 plugins: []
 repo_name: PI1 - Grupo 02
 repo_url: https://github.com/fcte-pi1/2026_1_PI1_Grupo02_Bruno.git
@@ -24,7 +27,8 @@ nav:
     - Software: 
       - Arquitetura de Software: pages/software/arquitetura_software.md
   - Entregas:
-    - Ponto de Controle 1: pages/entregas/pc1.md
+    - Ponto de Controle 1: 
+      - Backlog Priorizado: pages/entregas/pc1/backlog.md
     - Ponto de Controle 2: pages/entregas/pc2.md
     - Ponto de Controle 3: pages/entregas/pc3.md
 extra_css:
