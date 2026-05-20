@@ -18,9 +18,9 @@ nav:
   - Cronograma: pages/cronograma/cronograma.md
   - EAP do Projeto: pages/eap/eap.md
   - Documentação:
-    - Eletrônica: pages/eletronica/eletronica.md
     - Energia: pages/energia/energia.md
     - Estrutura: pages/estrutura/estrutura.md
+    - Hardware: pages/hardware/hardware.md
     - Software: 
       - Arquitetura de Software: pages/software/arquitetura_software.md
   - Entregas:
