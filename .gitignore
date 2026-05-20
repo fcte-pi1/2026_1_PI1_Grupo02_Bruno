@@ -36,7 +36,8 @@ dist/
 
 # Adicione outros arquivos a serem ignorados aqui
 # ...
-
+venv/
+site/
 # LaTeX
 
 relatorio.pdf
