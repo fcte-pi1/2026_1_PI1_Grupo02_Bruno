@@ -16,4 +16,6 @@ urlpatterns = [
         views.labirinto_detalhe,
         name="labirinto_detalhe",
     ),
+    path("corridas", views.corridas, name="corridas"),
+    path("corridas/", views.corridas, name="corridas"),
 ]

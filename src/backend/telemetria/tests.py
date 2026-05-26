@@ -2,7 +2,7 @@ import json
 
 from django.test import TestCase
 
-from .models import Labirinto
+from .models import Corrida, Labirinto
 
 
 class LabirintosApiTests(TestCase):
@@ -78,3 +78,67 @@ class LabirintosApiTests(TestCase):
         response = self.client.get(f"/api/labirintos/{labirinto.id}/")
 
         self.assertEqual(response.status_code, 200)
+
+
+class CorridasApiTests(TestCase):
+    endpoint = "/api/corridas"
+
+    def test_cria_corrida(self):
+        labirinto = Labirinto.objects.create(nome="Labirinto corrida", tamanho=16)
+
+        response = self.client.post(
+            self.endpoint,
+            data=json.dumps({"labirinto_id": labirinto.id}),
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.json()["labirinto_id"], labirinto.id)
+        self.assertFalse(response.json()["desafio_concluido"])
+        self.assertIn("iniciado_em", response.json())
+        self.assertEqual(Corrida.objects.count(), 1)
+
+    def test_retorna_404_quando_labirinto_nao_existe(self):
+        response = self.client.post(
+            self.endpoint,
+            data=json.dumps({"labirinto_id": 999}),
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.json()["erro"], "Labirinto nao encontrado.")
+        self.assertEqual(Corrida.objects.count(), 0)
+
+    def test_rejeita_labirinto_id_invalido(self):
+        response = self.client.post(
+            self.endpoint,
+            data=json.dumps({"labirinto_id": "1"}),
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.json()["erro"],
+            "O campo labirinto_id e obrigatorio e deve ser inteiro.",
+        )
+
+    def test_rejeita_json_invalido(self):
+        response = self.client.post(
+            self.endpoint,
+            data="{",
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json()["erro"], "JSON invalido.")
+
+    def test_aceita_rota_com_barra_final(self):
+        labirinto = Labirinto.objects.create(nome="Labirinto barra", tamanho=4)
+
+        response = self.client.post(
+            "/api/corridas/",
+            data=json.dumps({"labirinto_id": labirinto.id}),
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 201)
