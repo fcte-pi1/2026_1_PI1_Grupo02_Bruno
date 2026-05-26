@@ -16,6 +16,21 @@ def _serializar_corrida(corrida):
     }
 
 
+def _serializar_corrida_detalhe(corrida):
+    return {
+        "id": corrida.id,
+        "labirinto_id": corrida.labitinto_id_id,
+        "tempo_conclusao_sec": corrida.tempo_conclusao_sec,
+        "velocidade_media": corrida.velocidade_med,
+        "consumo_bateria": corrida.consumo_bat,
+        "desafio_concluido": corrida.desafio_concluido,
+        "iniciado_em": corrida.iniciado_em.isoformat(),
+        "finalizado_em": (
+            corrida.finalizado_em.isoformat() if corrida.finalizado_em else None
+        ),
+    }
+
+
 @csrf_exempt
 @require_http_methods(["POST"])
 def corridas(request):
@@ -41,3 +56,13 @@ def corridas(request):
 
     corrida = Corrida.objects.create(labitinto_id=labirinto)
     return JsonResponse(_serializar_corrida(corrida), status=201)
+
+
+@require_http_methods(["GET"])
+def corrida_detalhe(request, corrida_id):
+    try:
+        corrida = Corrida.objects.get(id=corrida_id)
+    except Corrida.DoesNotExist:
+        return JsonResponse({"erro": "Corrida nao encontrada."}, status=404)
+
+    return JsonResponse(_serializar_corrida_detalhe(corrida))
