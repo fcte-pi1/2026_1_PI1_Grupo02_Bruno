@@ -58,3 +58,13 @@ def labirintos(request):
 
     labirinto = Labirinto.objects.create(nome=nome, tamanho=tamanho)
     return JsonResponse(_serializar_labirinto(labirinto), status=201)
+
+
+@require_http_methods(["GET"])
+def labirinto_detalhe(request, labirinto_id):
+    try:
+        labirinto = Labirinto.objects.get(id=labirinto_id)
+    except Labirinto.DoesNotExist:
+        return JsonResponse({"erro": "Labirinto nao encontrado."}, status=404)
+
+    return JsonResponse(_serializar_labirinto(labirinto))

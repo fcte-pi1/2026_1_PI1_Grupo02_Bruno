@@ -55,3 +55,26 @@ class LabirintosApiTests(TestCase):
         response = self.client.get("/api/labirintos/")
 
         self.assertEqual(response.status_code, 200)
+
+    def test_busca_labirinto_por_id(self):
+        labirinto = Labirinto.objects.create(nome="Labirinto 03", tamanho=4)
+
+        response = self.client.get(f"/api/labirintos/{labirinto.id}")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["id"], labirinto.id)
+        self.assertEqual(response.json()["nome"], "Labirinto 03")
+        self.assertEqual(response.json()["tamanho"], 4)
+
+    def test_retorna_404_para_labirinto_inexistente(self):
+        response = self.client.get("/api/labirintos/999")
+
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.json()["erro"], "Labirinto nao encontrado.")
+
+    def test_busca_por_id_aceita_barra_final(self):
+        labirinto = Labirinto.objects.create(nome="Labirinto 04", tamanho=8)
+
+        response = self.client.get(f"/api/labirintos/{labirinto.id}/")
+
+        self.assertEqual(response.status_code, 200)
