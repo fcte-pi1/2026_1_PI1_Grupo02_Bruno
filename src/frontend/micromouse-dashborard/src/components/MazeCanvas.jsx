@@ -5,10 +5,10 @@ const fases = {
     'Desafio': {id: 'Desafio', label: 'Desafio final', cor: 'bg-blue-500'},
 }
 const legenda = [
-    {cor: 'bg-red-500', label: 'Mouse'},
-    {cor: 'bg-blue-400', label: 'Trajeto'},
-    {cor: 'bg-slate-400', label: 'Parede'},
-    {cor: 'bg-yellow-400', label: 'Destino'}
+  { cor: '#ef4444', label: 'Mouse' },
+  { cor: '#60a5fa', label: 'Trajeto' },
+  { cor: '#94a3b8', label: 'Parede' },
+  { cor: '#facc15', label: 'Destino' },
 ]
 
 export default function MazeCanvas({fase}) {
@@ -41,9 +41,12 @@ export default function MazeCanvas({fase}) {
                 }}>{fase_atual.tipo}</span>
             </div>
             <div id="maze-canvas" style={{flex: 1, position: 'relative'}}>
+
+            </div>
+            <div id={'legenda'} style={{ display: 'flex', gap: '12px', marginTop: '12px'}}>
                 {legenda.map((item) => (
                     <div key={item.label} style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', color: '#9ca3af' }}>
-                        <span style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: item.cor.replace('bg-', '') }} />
+                        <span style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: item.cor}} />
                             {item.label}
                     </div>
                 ))}
