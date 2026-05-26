@@ -1,7 +1,7 @@
 # Geral
 .DS_Store
 .vscode
-
+.idea
 # Adicione outros arquivos a serem ignorados aqui
 # ...
 
