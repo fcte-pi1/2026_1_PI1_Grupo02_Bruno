@@ -12,10 +12,7 @@ const legenda = [
 ]
 
 export default function MazeCanvas({fase}) {
-    console.log(fase)
-
     const fase_atual = fases[fase]
-    console.log(fase_atual)
     return (
         <div id='maze-complete' style={{display: 'flex', flexDirection: 'column', height: '100%', gap: '12px'}}>
             <div id="maze-header" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start'}}>
