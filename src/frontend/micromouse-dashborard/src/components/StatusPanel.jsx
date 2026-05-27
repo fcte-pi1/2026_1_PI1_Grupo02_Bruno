@@ -54,8 +54,8 @@ export default function StatusPanel({
                             onToglle={onToggle} rodando={rodando}/>
             </div>
             <div id='metricas'>
-                <MetriCard titulo={'Bateria'} valor={bateria} onValor={onBateria} unidade={'%'}/>
-                <MetriCard titulo={'velocidade'} valor={velocidade} onValor={onVelocidade} unidade={'m/s'}/>
+                {/*<MetriCard titulo={'Bateria'} valor={bateria} onValor={onBateria} unidade={'%'}/>*/}
+                {/*<MetriCard titulo={'velocidade'} valor={velocidade} onValor={onVelocidade} unidade={'m/s'}/>*/}
             </div>
             <div id='resultado'>
 

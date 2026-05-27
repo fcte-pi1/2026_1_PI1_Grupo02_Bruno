@@ -4,7 +4,7 @@
 .idea
 # Adicione outros arquivos a serem ignorados aqui
 # ...
-
+/src/frontend/micromouse-dashborard/node_modules/*
 # LaTeX
 
 relatorio.pdf
