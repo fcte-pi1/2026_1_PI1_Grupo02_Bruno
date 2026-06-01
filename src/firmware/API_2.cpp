@@ -40,8 +40,6 @@ bool API::wallLeft() {
 
 void API::moveForward(int distance) {
     std::cout << "moveForward";
-    // Não imprime o argumento distance a menos que seja explicitamente especificado,
-    // para manter compatibilidade com versões mais antigas do simulador
     if (distance != 1) {
         std::cout << " " << distance;
     }
