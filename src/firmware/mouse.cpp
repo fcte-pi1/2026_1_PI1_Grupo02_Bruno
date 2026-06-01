@@ -2,6 +2,8 @@
 #include <cstring>
 #include <array>
 #include <algorithm>
+#include <stdexcept>
+
 #include "API_2.h"
 
 // Lembrar de fazer as configuracoes para quando a chave do micromouse mudar o programa trocar o tamanho do mapa
@@ -11,19 +13,18 @@ constexpr int MAX = 255;
 
 constexpr char P_NORTE = 0x1;
 constexpr char P_LESTE = 0x2;
-constexpr char P_SUL = 0x4;
+constexpr char P_SUL   = 0x4;
 constexpr char P_OESTE = 0x8;
 
 enum class Direcao : int { norte = 0, leste = 1, sul = 2, oeste = 3 };
 
 constexpr int NUM_DIRECOES = 4;
 
-// Converte Direcao para int para uso como índice
 constexpr int idx(Direcao d) { return static_cast<int>(d); }
 
-class Rataturing {
+class Micromouse {
 public:
-    Rataturing() {
+    Micromouse() {
         reset();
     }
 
@@ -35,10 +36,10 @@ public:
             detectar_paredes();
             calcular_distancias();
             atualizar_tela();
-            mover_para_melhor_celula();
+            melhor_celula();
         }
 
-        API_setColor(pos_x, pos_y, 'G');
+        API::setColor(pos_x, pos_y, 'G');
     }
 
 private:
@@ -47,8 +48,8 @@ private:
     int pos_x, pos_y;
     Direcao direcao;
 
-    static constexpr std::array<int, NUM_DIRECOES> move_x = { 0, 1,  0, -1 };
-    static constexpr std::array<int, NUM_DIRECOES> move_y = { 1, 0, -1,  0 };
+    static constexpr std::array<int, NUM_DIRECOES> move_x = {  0, 1,  0, -1 };
+    static constexpr std::array<int, NUM_DIRECOES> move_y = {  1, 0, -1,  0 };
     static constexpr std::array<Direcao, NUM_DIRECOES> oposto = {
         Direcao::sul, Direcao::oeste, Direcao::norte, Direcao::leste
     };
@@ -114,20 +115,17 @@ private:
     }
 
     void atualizar_tela() {
-        char texto[8];
         for (int x = 0; x < TAM; x++) {
             for (int y = 0; y < TAM; y++) {
                 if (distancia[x][y] == MAX)
-                    API_setText(x, y, "?");
-                else {
-                    std::snprintf(texto, sizeof(texto), "%d", distancia[x][y]);
-                    API_setText(x, y, texto);
-                }
+                    API::setText(x, y, "?");
+                else
+                    API::setText(x, y, std::to_string(distancia[x][y]));
                 if (centro(x, y))
-                    API_setColor(x, y, 'G');
+                    API::setColor(x, y, 'G');
             }
         }
-        API_setColor(pos_x, pos_y, 'Y');
+        API::setColor(pos_x, pos_y, 'Y');
     }
 
     void adicionar_parede(int x, int y, Direcao d) {
@@ -138,7 +136,7 @@ private:
             paredes[nx][ny] |= (1 << idx(oposto[idx(d)]));
 
         const char letras[] = "nesw";
-        API_setWall(x, y, letras[idx(d)]);
+        API::setWall(x, y, letras[idx(d)]);
     }
 
     Direcao relativa_para_absoluta(Direcao dir_mouse, int giro) const {
@@ -146,12 +144,12 @@ private:
     }
 
     void detectar_paredes() {
-        if (API_wallFront()) adicionar_parede(pos_x, pos_y, relativa_para_absoluta(direcao, 0));
-        if (API_wallRight()) adicionar_parede(pos_x, pos_y, relativa_para_absoluta(direcao, 1));
-        if (API_wallLeft())  adicionar_parede(pos_x, pos_y, relativa_para_absoluta(direcao, 3));
+        if (API::wallFront()) adicionar_parede(pos_x, pos_y, relativa_para_absoluta(direcao, 0));
+        if (API::wallRight()) adicionar_parede(pos_x, pos_y, relativa_para_absoluta(direcao, 1));
+        if (API::wallLeft())  adicionar_parede(pos_x, pos_y, relativa_para_absoluta(direcao, 3));
     }
 
-    bool mover_para_melhor_celula() {
+    bool melhor_celula() {
         int melhor_direcao = -1;
         int menor_distancia = MAX + 1;
 
@@ -171,15 +169,14 @@ private:
         while (idx(direcao) != melhor_direcao) {
             int diferenca = (melhor_direcao - idx(direcao) + NUM_DIRECOES) % NUM_DIRECOES;
             if (diferenca == 1) {
-                API_turnRight();
+                API::turnRight();
                 direcao = static_cast<Direcao>((idx(direcao) + 1) % NUM_DIRECOES);
             } else {
-                API_turnLeft();
+                API::turnLeft();
                 direcao = static_cast<Direcao>((idx(direcao) + 3) % NUM_DIRECOES);
             }
         }
-
-        API_moveForward();
+        API::moveForward();
         pos_x += move_x[melhor_direcao];
         pos_y += move_y[melhor_direcao];
         return true;
@@ -187,7 +184,7 @@ private:
 };
 
 int main() {
-    Rataturing mouse;
+    Micromouse mouse;
     mouse.run();
     return 0;
 }
