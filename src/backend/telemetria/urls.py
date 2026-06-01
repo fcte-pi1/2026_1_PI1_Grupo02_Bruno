@@ -28,4 +28,25 @@ urlpatterns = [
         views.corrida_detalhe,
         name="corrida_detalhe",
     ),
+
+    path("corridas/<int:corrida_id>/telemetria", views.telemetria, name="telemetria"),
+    path(
+        "corridas/<int:corrida_id>/telemetria/",
+        views.telemetria,
+        name="telemetria",
+    ),
+    path("corridas/<int:corrida_id>/estado-atual", views.estado_atual, name="estado_atual"),
+    path(
+        "corridas/<int:corrida_id>/estado-atual/",
+        views.estado_atual,
+        name="estado_atual",
+    ),
+    path("corridas/<int:corrida_id>/finalizar", views.finalizar_corrida, name="finalizar_corrida"),
+    path(
+        "corridas/<int:corrida_id>/finalizar/",
+        views.finalizar_corrida,
+        name="finalizar_corrida",
+    ),
+
+
 ]
