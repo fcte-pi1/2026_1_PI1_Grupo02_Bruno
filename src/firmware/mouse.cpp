@@ -2,7 +2,6 @@
 #include <cstring>
 #include <array>
 #include <algorithm>
-
 #include "API_2.h"
 
 // Lembrar de fazer as configuracoes para quando a chave do micromouse mudar o programa trocar o tamanho do mapa
