@@ -147,9 +147,6 @@ private:
             if (diferenca == 1) {
                 motors_girar_direita();                       
                 direcao = static_cast<Direcao>((idx(direcao) + 1) % NUM_DIRECOES);
-            } else if (diferenca == 3) {
-                motors_girar_direita();
-                direcao = static_cast<Direcao>((idx(direcao) + 1) % NUM_DIRECOES);
             } else {
                 motors_girar_esquerda();                        
                 direcao = static_cast<Direcao>((idx(direcao) + 3) % NUM_DIRECOES);
