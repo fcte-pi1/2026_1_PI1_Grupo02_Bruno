@@ -1,7 +1,7 @@
 const fases = {
-    'Labirinto 01': {id: 'labirinto01', label: 'Labirinto 01', cor: 'bg-purple-500', tipo: '4 x 4'},
-    'Labirinto 02': {id: 'labirinto02', label: 'Labirinto 02', cor: 'bg-pink-500', tipo: '8 x 8'},
-    'Labirinto 03': {id: 'labirinto03', label: 'Labirinto 03', cor: 'bg-green-500', tipo: '16 x 16'},
+    'Labirinto 01': {id: 'labirinto01', label: 'Labirinto 4x4', cor: 'bg-purple-500', tipo: '4 x 4'},
+    'Labirinto 02': {id: 'labirinto02', label: 'Labirinto 8x8', cor: 'bg-pink-500', tipo: '8 x 8'},
+    'Labirinto 03': {id: 'labirinto03', label: 'Labirinto 16x16', cor: 'bg-green-500', tipo: '16 x 16'},
     'Desafio': {id: 'Desafio', label: 'Desafio final', cor: 'bg-blue-500'},
 }
 const legenda = [

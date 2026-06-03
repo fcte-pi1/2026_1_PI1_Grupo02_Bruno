@@ -9,20 +9,20 @@ export default function Cronometro({tempo = 0, onTempo, onToglle, rodando}) {
         <div id='cronometro-container' style={{
             backgroundColor: '#11131f',
             borderRadius: '10px',
-            padding: '16px',
+            padding: '6px',
         }}>
             <p style={{
-                fontSize: '15px',
+                fontSize: '10px',
                 color: '#6b7280',
                 letterSpacing: '1px',
-                margin: '0 0 8px 0'
+
             }}>Cronômetro: </p>
             <div id={'timer'}>
                 <span style={{
-                    fontSize: '48px',
+                    fontSize: '25px',
                     color: '#00e5ff'
                 }}>{`${minutos.padStart(2, '0')}:${segundos.padStart(2, '0')}.`}</span>
-                <span style={{fontSize: '24px', color: '#00e5ff'}}>{`${milisegundos.padStart(3, '0')}`}</span>
+                <span style={{fontSize: '15px', color: '#00e5ff'}}>{`${milisegundos.padStart(3, '0')}`}</span>
             </div>
             <button id={'iniciar'} onClick={()=>{
                 if(!rodando) onTempo(0)

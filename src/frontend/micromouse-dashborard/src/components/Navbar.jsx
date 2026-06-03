@@ -1,7 +1,7 @@
 const fases = [
-  { id: 'Labirinto 01', label: 'Labirinto 01', cor: 'bg-purple-500',tipo:'4x4' },
-  { id: 'Labirinto 02', label: 'Labirinto 02', cor: 'bg-pink-500',tipo:'8x8' },
-  { id: 'Labirinto 03', label: 'Labirinto 03', cor: 'bg-green-500',tipo:'16x16' },
+  { id: 'Labirinto 01', label: 'Labirinto 4x4', cor: 'bg-purple-500',tipo:'4x4' },
+  { id: 'Labirinto 02', label: 'Labirinto 8x8', cor: 'bg-pink-500',tipo:'8x8' },
+  { id: 'Labirinto 03', label: 'Labirinto 16x16', cor: 'bg-green-500',tipo:'16x16' },
   { id: 'Desafio',     label: 'Desafio final', cor: 'bg-blue-500' },
 ]
 

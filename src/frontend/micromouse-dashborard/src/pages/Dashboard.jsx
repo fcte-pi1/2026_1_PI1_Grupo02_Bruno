@@ -9,6 +9,9 @@ export default function Dashboard() {
     const [tempo, setTempo] = useState(0)
     const [bateria, setBateria] = useState(100)
     const [velocidade, setVelocidade] = useState(0)
+    const [direcao, setDirecao] = useState('n')
+    const [posicao, setPosicao] = useState({x: 0, y: 0})
+    const [celulasVisitadas, setCelulasVisitadas] = useState(0)
     const inicioRef = useRef(null)
 
     useEffect(() => {
@@ -42,7 +45,9 @@ export default function Dashboard() {
                 </div>
                 <div style={{width: '288px', backgroundColor: '#1a1d2e', borderRadius: '12px', padding: '1rem'}}>
                     <StatusPanel
-
+                        celulas = {celulasVisitadas} onCelulas = {setCelulasVisitadas}
+                        posicao={posicao} onPosicao={setPosicao}
+                        direcao={direcao} onDirecao={setDirecao}
                         rodando={rodando} onRodando={setRodando}
                         tempo={tempo} onTempo={setTempo}
                         bateria={bateria} onBateria={setBateria}
