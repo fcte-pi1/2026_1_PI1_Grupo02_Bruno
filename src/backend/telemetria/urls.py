@@ -2,7 +2,6 @@ from django.urls import path
 
 from . import views
 
-
 urlpatterns = [
     path("labirintos", views.labirintos, name="labirintos"),
     path("labirintos/", views.labirintos, name="labirintos"),
@@ -41,10 +40,10 @@ urlpatterns = [
         views.estado_atual,
         name="estado_atual",
     ),
-    path("corridas/<int:corrida_id>/finalizar", views.finalizar_corrida, name="finalizar_corrida"),
+    path("corridas/<int:corrida_id>/finalizar", views.finalizar, name="finalizar_corrida"),
     path(
         "corridas/<int:corrida_id>/finalizar/",
-        views.finalizar_corrida,
+        views.finalizar,
         name="finalizar_corrida",
     ),
 

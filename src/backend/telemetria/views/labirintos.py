@@ -1,13 +1,17 @@
 import datetime
 import json
 
+from django.template.backends import django
+
+from django.utils import timezone
+
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 
 from ..models import Labirinto,Corrida,Celula,EstadoAtual
 
-from corridas import _serializar_corrida_detalhe
+from .corridas import _serializar_corrida_detalhe
 
 TAMANHOS_PERMITIDOS = {4, 8, 16}
 
@@ -86,7 +90,7 @@ def telemetria(request,corrida_id):
         return JsonResponse({"erro": "JSON invalido."}, status=400)
 
     celula,_=Celula.objects.get_or_create(
-        labirinto_id=corrida.labirinto_id,
+        labirinto_id=corrida.labitinto_id,
         linha=dados.get("linha"),
         coluna=dados.get("coluna"),
         defaults={
@@ -159,6 +163,6 @@ def finalizar(request,corrida_id):
     corrida.velocidade_med=dados.get("velocidade_media")
     corrida.consumo_bat=dados.get("consumo_bateria")
     corrida.desafio_concluido=dados.get("desafio_concluido",False)
-    corrida.finalizado_em=datetime.now(timezone=datetime.timezone.utc)
+    corrida.finalizado_em=timezone.now()
     corrida.save()
     return JsonResponse(_serializar_corrida_detalhe(corrida))
