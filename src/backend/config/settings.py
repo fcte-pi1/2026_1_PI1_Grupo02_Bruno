@@ -38,7 +38,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     "telemetria",
+    'channels',
 ]
+
+ASGI_APPLICATION = 'config.routing.application'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
