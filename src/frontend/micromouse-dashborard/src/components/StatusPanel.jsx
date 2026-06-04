@@ -1,5 +1,6 @@
 import Cronometro from "./Cronometro";
 import MetriCard from "./MetriCard";
+import {useNavigate} from "react-router-dom";
 
 export default function StatusPanel({
                                         posicao, onPosicao, direcao, onDirecao, celulas, onCelulas,
@@ -17,6 +18,7 @@ export default function StatusPanel({
 
     const Bateria = 'Bateria'
     // console.log(bateria)
+    const navigate = useNavigate()
     return (
         <div style={{display: 'flex', flexDirection: 'column', gap: '14px', height: '100%'}}>
             <div id='estado'
@@ -57,12 +59,31 @@ export default function StatusPanel({
                             onToglle={onToggle} rodando={rodando}/>
             </div>
             <div id='metricas'>
-                {<MetriCard titulo={Bateria} valor={bateria} onValor={onBateria} unidade={'%'} showBarra/>}
-                {/*{<MetriCard titulo={'velocidade'} valor={velocidade} onValor={onVelocidade} unidade={'m/s'}/>}*/}
-                {/*{<MetriCard titulo={'Direção'} valor={direcao} onValor={onDirecao} />}*/}
-            </div>
-            <div id='resultado'>
+                {<MetriCard titulo={Bateria} valor={bateria} onValor={onBateria} unidade={'%'} showBarra={true}/>}
 
+            </div>
+            <div id='metricas2' style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px'}}>
+                {<MetriCard quadrado={true} titulo={'velocidade Média'} valor={velocidade} onValor={onVelocidade}
+                            unidade={'m/s'}/>}
+                {<MetriCard quadrado={true} titulo={'Direção'} valor={direcao} onValor={onDirecao}/>}
+                <MetriCard quadrado={true} titulo={'Posição Atual'} valor={`${posicao.x}, ${posicao.y}`}
+                           onValor={onPosicao}/>
+                <MetriCard quadrado={true} titulo={'N° de  Células visitadas'} valor={celulas} onValor={onCelulas}/>
+            </div>
+            <div id='historico'>
+                <button style={{
+                    width: '100%',
+                    backgroundColor: '#2e3347',
+                    borderRadius: '10px',
+                    padding: '12px',
+                    color: '#f3f4f6',
+                    fontSize: '15px',
+                    border: 'none',
+                    cursor: 'pointer'
+                }} onClick={()=>{
+                    navigate('/historico')
+                }}>Historico
+                </button>
             </div>
 
         </div>
