@@ -1,6 +1,6 @@
-from urls import re_path
+from django.urls import re_path
 from . import consumers
 
 websocket_urlpatterns = [
-    re_path(r"ws/telemetria/(?P<corrida_id>\d+)/live/$)", consumers.CorridaConsumer.as_asgi())
+    re_path(r"^ws/corrida/(?P<corrida_id>\d+)/live/$", consumers.CorridaConsumer.as_asgi())
 ]
