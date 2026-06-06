@@ -50,8 +50,9 @@
 // Distância em pulsos equivalente a 1 célula
 #define PULSOS_CELULA  ((int)(PULSOSPORVOLTA * (CELULA_MM / (3.14159f * DIAMETRO_RODA_MM))))
 
-// Pulsos para girar 90°  (arco = (π × LARGURA_ROBO) / 4  /  circunferência_roda)
+// pulsos para girar 90°  (arco = (π × LARGURA_ROBÔ) / 4  /  circunferência_roda)
 #define PULSOS_GIRO_90 ((int)(PULSOSPORVOLTA * (LARGURA_ROBO_MM / (4.0f * DIAMETRO_RODA_MM))))
+
 // esse aqui vamos ter que definir na bancada quando testarmos mas resumidamente 
 // o PID KP serve para quando uma roda estiver mais atrasada e ele vai dar um impulso nela pra compesar 
 // o PID KI serve para corrigir erros bem pequenos caso um motorfique mais fraco que o outro ou coisas do tipo (talvez nem precisemos usar)
@@ -64,3 +65,18 @@
 #define VEL_BASE      160
 #define VEL_GIRO      130
 #define VEL_MAX       220
+
+// leitura da bateria através do divisor de tensão
+#define BATERIA ??
+
+// resistência em ohms dos resistores
+#define BAT_R1 10000.0f
+#define BAT_R2 4700.0f
+
+// tensão de referência da esp e resolução da esp
+#define BAT_VREF 3.3f
+#define BAT_ADC_BITS 4095.0f
+
+// limites do divisor de tensão para a regra de 3
+#define BAT_VMAX 2.8f
+#define BAT_VMIN 1.9f
