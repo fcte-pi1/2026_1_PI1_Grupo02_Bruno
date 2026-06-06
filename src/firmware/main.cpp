@@ -6,6 +6,7 @@
 #include "hal.h"
 #include "motors.h"
 #include "sensors.h"
+#include "battery.h"
 
 // seguindo a mesma lógica do código do simulador mms mas agora com funções declaradas e não apenas api do simulador
 constexpr int TAM = 16;
@@ -23,20 +24,30 @@ public:
     Micromouse() {reset();}
 
     void run() {
-        
         detectar_paredes();
         calcular_distancias();
-
+        ultima_checada = millis();
         while (!centro(pos_x, pos_y)) {
             detectar_paredes();
             calcular_distancias();
+            debug_tela();
             melhor_celula();
+            if (millis() - ultima_checada >= INTERVALO_BATERIA) {
+                int bat = battery_porcentagem();
+                Serial.print("Nivel da Bateria: ");
+                Serial.print(bat);
+                Serial.println("%");
+                
+                ultimo_tempo_bateria = millis(); // Reseta o cronômetro
+            }
         }
-        // chegou ao centro, para os motores
+        // chegou ao centro para os motores
         motors_parar();
     }
 
 private:
+    unsigned long ultima_checada = 0;
+    const unsigned long INTERVALO_BATERIA = 30000;
     int  distancia[TAM][TAM];
     char paredes[TAM][TAM];
     int  pos_x, pos_y;
@@ -45,6 +56,7 @@ private:
     static constexpr std::array<int, NUM_DIRECOES> move_y = {1, 0, -1, 0};
     static constexpr std::array<Direcao, NUM_DIRECOES> oposto = {Direcao::sul, Direcao::oeste, Direcao::norte, Direcao::leste
     };
+    
 
     void reset() {
         pos_x  = 0;
@@ -114,7 +126,7 @@ private:
         return static_cast<Direcao>((idx(dir_mouse) + giro) % NUM_DIRECOES);
     }
 
-    // detecção de paredes e adicionar paredes
+    // detecção de paredes
     void detectar_paredes() {
         if (sensor_parede_frente())
             adicionar_parede(pos_x, pos_y, relativa_para_absoluta(direcao, 0));
@@ -145,14 +157,14 @@ private:
         while (idx(direcao) != melhor_direcao) {
             int diferenca = (melhor_direcao - idx(direcao) + NUM_DIRECOES) % NUM_DIRECOES;
             if (diferenca == 1) {
-                motors_girar_direita();                       
+                motors_girar_direita();                         
                 direcao = static_cast<Direcao>((idx(direcao) + 1) % NUM_DIRECOES);
             } else {
                 motors_girar_esquerda();                        
                 direcao = static_cast<Direcao>((idx(direcao) + 3) % NUM_DIRECOES);
             }
         }
-        motors_avancar_celula();                             
+        motors_avancar_celula();                               
         pos_x += move_x[melhor_direcao];
         pos_y += move_y[melhor_direcao];
         return true;
@@ -163,6 +175,7 @@ private:
 void setup() {
     Serial.begin(115200);
     sensors_init();
+    battery_init();
     motors_init();
     delay(2000);   
     Micromouse mouse;
