@@ -45,16 +45,16 @@ Conheça os membros da equipe **RataTuring**.
         <a href="https://github.com/mmonteirov">@mmonteirov</a>
       </td>
       <td align="center" width="220">
-        <img src="https://github.com/usuario3.png" width="120" style="border-radius: 50%;" alt="Foto perfil"/><br>
+        <img src="https://github.com/Yukie2108.png" width="120" style="border-radius: 50%;" alt="Foto perfil"/><br>
         <strong>Emili Follmann</strong><br>
         <sub>Membro · Co-gerência</sub><br><br>
-        <a href="https://github.com/usuario3">@usuario3</a>
+        <a href="https://github.com/Yukie2108">@Yukie2108</a>
       </td>
       <td align="center" width="220">
-        <img src="https://github.com/usuario4.png" width="120" style="border-radius: 50%;" alt="Foto perfil"/><br>
+        <img src="https://github.com/Lukrte.png" width="120" style="border-radius: 50%;" alt="Foto perfil"/><br>
         <strong>Fellipe Rodarte</strong><br>
         <sub>Membro</sub><br><br>
-        <a href="https://github.com/usuario4">@usuario4</a>
+        <a href="https://github.com/Lukrte">@Lukrte</a>
       </td>
       <td align="center" width="220">
         <img src="https://github.com/natlbarbosa.png" width="120" style="border-radius: 50%;" alt="Foto perfil"/><br>
@@ -86,10 +86,10 @@ Conheça os membros da equipe **RataTuring**.
         <a href="https://github.com/usuario3">@usuario3</a>
       </td>
       <td align="center" width="220">
-        <img src="https://github.com/usuario3.png" width="120" style="border-radius: 50%;" alt="Foto perfil"/><br>
+        <img src="https://github.com/Matheus-S-Camargo.png" width="120" style="border-radius: 50%;" alt="Foto perfil"/><br>
         <strong>Matheus Saraiva</strong><br>
         <sub>Membro</sub><br><br>
-        <a href="https://github.com/usuario3">@usuario3</a>
+        <a href="https://github.com/usuario3">@Matheus-S-Camargo</a>
       </td>
     </tr>
   </table>
@@ -121,10 +121,10 @@ Conheça os membros da equipe **RataTuring**.
         <a href="https://github.com/gabriel-otacilio">@gabriel-otacilio</a>
       </td>
       <td align="center" width="220">
-        <img src="https://github.com/usuario4.png" width="120" style="border-radius: 50%;" alt="Foto perfil"/><br>
+        <img src="https://github.com/Nic0laslc.png" width="120" style="border-radius: 50%;" alt="Foto perfil"/><br>
         <strong>Nicolas Lopes</strong><br>
         <sub>Membro</sub><br><br>
-        <a href="https://github.com/usuario4">@usuario4</a>
+        <a href="https://github.com/usuario4">@Nic0laslc</a>
       </td>
     </tr>
   </table>
