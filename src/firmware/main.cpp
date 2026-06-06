@@ -38,7 +38,7 @@ public:
                 Serial.print(bat);
                 Serial.println("%");
                 
-                ultimo_tempo_bateria = millis(); // Reseta o cronômetro
+                ultima_checada = millis(); // Reseta o cronômetro
             }
         }
         // chegou ao centro para os motores
