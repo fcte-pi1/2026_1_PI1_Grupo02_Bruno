@@ -120,6 +120,7 @@ def telemetria(request,corrida_id):
         {
             "type": "telemetria_update",
             "data": {
+                "corrida_id": corrida_id,
                 "posicao_ordem": registro.posicao_ordem,
                 "x": registro.x,
                 "y": registro.y,

@@ -26,6 +26,8 @@ for linha in range(16):
         eh_fim = linha == 15 and coluna == 15
 
         payload = {
+            "corrida_id": corrida_id,
+            "labirinto_id": labirinto_id,
             "linha": linha,
             "coluna": coluna,
             "parede_norte": linha == 0,           # borda norte
@@ -45,7 +47,7 @@ for linha in range(16):
         print(f"[{r.status_code}] ({linha},{coluna}) ordem={posicao_ordem} {status}")
 
         posicao_ordem += 1
-        time.sleep(0.2)
+        time.sleep(0.5)
 
 # finaliza a corrida
 tempo_total = posicao_ordem * 0.2
