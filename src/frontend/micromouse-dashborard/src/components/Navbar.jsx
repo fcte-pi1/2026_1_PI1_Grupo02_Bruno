@@ -1,16 +1,14 @@
 const fases = [
-  { id: 'labirinto01', label: 'Labirinto 01', cor: 'bg-purple-500' },
-  { id: 'labirinto02', label: 'Labirinto 02', cor: 'bg-pink-500' },
-  { id: 'labirinto03', label: 'Labirinto 03', cor: 'bg-green-500' },
-  { id: 'desafio',     label: 'Desafio final', cor: 'bg-blue-500' },
+  { id: 'Labirinto 01', label: 'Labirinto 4x4', cor: 'bg-purple-500',tipo:'4x4' },
+  { id: 'Labirinto 02', label: 'Labirinto 8x8', cor: 'bg-pink-500',tipo:'8x8' },
+  { id: 'Labirinto 03', label: 'Labirinto 16x16', cor: 'bg-green-500',tipo:'16x16' },
+  { id: 'Desafio',     label: 'Desafio final', cor: 'bg-blue-500' },
 ]
 
 
 export default function Navbar({ faseAtual, onFaseChange }) {
   return (
     <nav className="flex items-center justify-between px-6 py-3 bg-[#0f1117] border-b border-white/10">
-      
-      {/* Abas das fases */}
       <div className="flex gap-3">
         {fases.map((fase) => (
           <button
