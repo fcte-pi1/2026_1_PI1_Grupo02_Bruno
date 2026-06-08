@@ -55,6 +55,17 @@ class CorridasApiTests(TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json()["erro"], "JSON invalido.")
 
+    def test_rejeita_corpo_json_que_nao_e_objeto(self):
+        response = self.client.post(
+            self.endpoint,
+            data=json.dumps([1]),
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json()["erro"], "O corpo deve ser um objeto JSON.")
+        self.assertEqual(Corrida.objects.count(), 0)
+
     def test_aceita_rota_com_barra_final(self):
         labirinto = Labirinto.objects.create(nome="Labirinto barra", tamanho=4)
 
