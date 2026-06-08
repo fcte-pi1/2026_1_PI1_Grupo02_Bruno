@@ -1,5 +1,7 @@
 import json
 
+from django.utils import timezone
+
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
@@ -32,8 +34,15 @@ def _serializar_corrida_detalhe(corrida):
 
 
 @csrf_exempt
-@require_http_methods(["POST"])
+@require_http_methods(["GET", "POST"])
 def corridas(request):
+    if request.method == "GET":
+        registros = Corrida.objects.order_by("id")
+        return JsonResponse(
+            [_serializar_corrida_detalhe(corrida) for corrida in registros],
+            safe=False,
+        )
+
     try:
         dados = json.loads(request.body)
     except (json.JSONDecodeError, UnicodeDecodeError):
@@ -53,6 +62,8 @@ def corridas(request):
         labirinto = Labirinto.objects.get(id=labirinto_id)
     except Labirinto.DoesNotExist:
         return JsonResponse({"erro": "Labirinto nao encontrado."}, status=404)
+
+    Corrida.objects.filter(finalizado_em__isnull=True).update(finalizado_em=timezone.now())
 
     corrida = Corrida.objects.create(labitinto_id=labirinto)
     return JsonResponse(_serializar_corrida(corrida), status=201)

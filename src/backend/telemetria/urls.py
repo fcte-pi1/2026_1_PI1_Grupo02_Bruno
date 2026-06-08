@@ -40,6 +40,12 @@ urlpatterns = [
         views.estado_atual,
         name="estado_atual",
     ),
+    path("corridas/<int:corrida_id>/trajeto", views.trajeto, name="trajeto"),
+    path(
+        "corridas/<int:corrida_id>/trajeto/",
+        views.trajeto,
+        name="trajeto",
+    ),
     path("corridas/<int:corrida_id>/finalizar", views.finalizar, name="finalizar_corrida"),
     path(
         "corridas/<int:corrida_id>/finalizar/",

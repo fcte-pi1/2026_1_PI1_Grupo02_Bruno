@@ -1,7 +1,7 @@
 from django.test import TestCase
 from datetime import datetime, timezone
 import json
-from telemetria.models import Labirinto, Corrida
+from telemetria.models import Celula, Corrida, EstadoAtual, Labirinto
 
 class CorridasApiTests(TestCase):
     endpoint = "/api/corridas"
@@ -54,6 +54,17 @@ class CorridasApiTests(TestCase):
 
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json()["erro"], "JSON invalido.")
+
+    def test_rejeita_corpo_json_que_nao_e_objeto(self):
+        response = self.client.post(
+            self.endpoint,
+            data=json.dumps([1]),
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json()["erro"], "O corpo deve ser um objeto JSON.")
+        self.assertEqual(Corrida.objects.count(), 0)
 
     def test_aceita_rota_com_barra_final(self):
         labirinto = Labirinto.objects.create(nome="Labirinto barra", tamanho=4)
@@ -135,9 +146,41 @@ class CorridasApiTests(TestCase):
                 "bateria": 0.5,
             }),content_type="application/json",
         )
-        print(response.json())
+
         self.assertEqual(response.status_code, 201)
         self.assertIn("id", response.json())
+        self.assertEqual(Celula.objects.count(), 1)
+        self.assertEqual(EstadoAtual.objects.count(), 1)
+        registro = EstadoAtual.objects.get()
+        self.assertEqual(registro.corrida_id, corrida)
+        self.assertEqual(registro.celula_id.labirinto_id, labirinto)
+
+    def test_cria_telemetria_sem_barra_final(self):
+        labirinto = Labirinto.objects.create(nome="Labirinto telemetria sem barra", tamanho=4)
+        corrida = Corrida.objects.create(labitinto_id=labirinto)
+
+        response = self.client.post(
+            f"/api/corridas/{corrida.id}/telemetria",
+            data=json.dumps({
+                "linha": 1,
+                "coluna": 2,
+                "parede_norte": "livre",
+                "parede_sul": "parede",
+                "parede_leste": "desconhecido",
+                "parede_oeste": "livre",
+                "posicao_ordem": 3,
+                "x": 1.5,
+                "y": 2.5,
+                "direcao": "leste",
+                "velocidade": 1.2,
+                "bateria": 0.9,
+            }),
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(Celula.objects.count(), 1)
+        self.assertEqual(EstadoAtual.objects.count(), 1)
 
     def test_corrida_inexistente_404(self):
         response = self.client.post(f"/api/corridas/999/telemetria/",
@@ -179,6 +222,12 @@ class CorridasApiTests(TestCase):
             response.json()["erro"], "Nenhuma telemetria encontrada."
         )
 
+    def test_estado_atual_corrida_inexistente(self):
+        response = self.client.get("/api/corridas/999/estado-atual/")
+
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.json()["erro"], "Corrida nao encontrada.")
+
     def test_estado_atual_com_telemetria(self):
         labirinto=Labirinto.objects.create(nome="Labirinto telemetria", tamanho=4)
         corrida = Corrida.objects.create(labitinto_id=labirinto)
@@ -201,19 +250,88 @@ class CorridasApiTests(TestCase):
         response2 = self.client.get(f"/api/corridas/{corrida.id}/estado-atual/")
         self.assertEqual(response2.status_code, 200)
 
+    def test_estado_atual_sem_barra_final_retorna_ultima_telemetria(self):
+        labirinto = Labirinto.objects.create(nome="Labirinto estado atual", tamanho=4)
+        corrida = Corrida.objects.create(labitinto_id=labirinto)
+        celula = Celula.objects.create(
+            labirinto_id=labirinto,
+            linha=2,
+            coluna=3,
+            parede_norte="livre",
+            parede_sul="parede",
+            parede_leste="livre",
+            parede_oeste="desconhecido",
+        )
+        EstadoAtual.objects.create(
+            corrida_id=corrida,
+            celula_id=celula,
+            posicao_ordem=1,
+            x=0.0,
+            y=0.0,
+            direcao="norte",
+            velocidade=0.5,
+            bateria=0.8,
+        )
+        EstadoAtual.objects.create(
+            corrida_id=corrida,
+            celula_id=celula,
+            posicao_ordem=2,
+            x=2.0,
+            y=3.0,
+            direcao="sul",
+            velocidade=1.5,
+            bateria=0.6,
+        )
+
+        response = self.client.get(f"/api/corridas/{corrida.id}/estado-atual")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["posicao_ordem"], 2)
+        self.assertEqual(response.json()["x"], 2.0)
+        self.assertEqual(response.json()["y"], 3.0)
+        self.assertEqual(response.json()["direcao"], "sul")
+        self.assertEqual(response.json()["celula"]["linha"], 2)
+        self.assertEqual(response.json()["celula"]["coluna"], 3)
+
     def test_finalizar_corrida(self):
         labiritinto=Labirinto.objects.create(nome="Labirinto finalizar", tamanho=4)
         corrida = Corrida.objects.create(labitinto_id=labiritinto)
         response = self.client.patch(f"/api/corridas/{corrida.id}/finalizar/",
             data=json.dumps({
                 "tempo_conclusao_sec": 123.4,
-                "velocidade_med": 10.5,
-                "consumo_bat": 0.7,
+                "velocidade_media": 10.5,
+                "consumo_bateria": 0.7,
                 "desafio_concluido": True,
 
             }),content_type="application/json")
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["tempo_conclusao_sec"], 123.4)
+        self.assertEqual(response.json()["velocidade_media"], 10.5)
+        self.assertEqual(response.json()["consumo_bateria"], 0.7)
         self.assertTrue(response.json()["desafio_concluido"])
+
+    def test_finalizar_corrida_sem_barra_final(self):
+        labirinto = Labirinto.objects.create(nome="Labirinto finalizar sem barra", tamanho=4)
+        corrida = Corrida.objects.create(labitinto_id=labirinto)
+
+        response = self.client.patch(
+            f"/api/corridas/{corrida.id}/finalizar",
+            data=json.dumps({
+                "tempo_conclusao_sec": 98.6,
+                "velocidade_media": 12.3,
+                "consumo_bateria": 0.4,
+                "desafio_concluido": True,
+            }),
+            content_type="application/json",
+        )
+
+        corrida.refresh_from_db()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["tempo_conclusao_sec"], 98.6)
+        self.assertEqual(response.json()["velocidade_media"], 12.3)
+        self.assertEqual(response.json()["consumo_bateria"], 0.4)
+        self.assertTrue(response.json()["desafio_concluido"])
+        self.assertIsNotNone(corrida.finalizado_em)
 
     def test_finalizar_corrida_inexistente(self):
         response = self.client.patch("/api/corridas/999/finalizar/",
@@ -221,3 +339,16 @@ class CorridasApiTests(TestCase):
             content_type="application/json")
         self.assertEqual(response.status_code, 404)
         self.assertEqual(response.json()["erro"], "Corrida nao encontrada.")
+
+    def test_finalizar_corrida_rejeita_json_invalido(self):
+        labirinto = Labirinto.objects.create(nome="Labirinto finalizar invalido", tamanho=4)
+        corrida = Corrida.objects.create(labitinto_id=labirinto)
+
+        response = self.client.patch(
+            f"/api/corridas/{corrida.id}/finalizar/",
+            data="{",
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json()["erro"], "JSON invalido.")
