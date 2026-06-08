@@ -146,9 +146,14 @@ class CorridasApiTests(TestCase):
                 "bateria": 0.5,
             }),content_type="application/json",
         )
-        print(response.json())
+
         self.assertEqual(response.status_code, 201)
         self.assertIn("id", response.json())
+        self.assertEqual(Celula.objects.count(), 1)
+        self.assertEqual(EstadoAtual.objects.count(), 1)
+        registro = EstadoAtual.objects.get()
+        self.assertEqual(registro.corrida_id, corrida)
+        self.assertEqual(registro.celula_id.labirinto_id, labirinto)
 
     def test_cria_telemetria_sem_barra_final(self):
         labirinto = Labirinto.objects.create(nome="Labirinto telemetria sem barra", tamanho=4)
@@ -294,12 +299,15 @@ class CorridasApiTests(TestCase):
         response = self.client.patch(f"/api/corridas/{corrida.id}/finalizar/",
             data=json.dumps({
                 "tempo_conclusao_sec": 123.4,
-                "velocidade_med": 10.5,
-                "consumo_bat": 0.7,
+                "velocidade_media": 10.5,
+                "consumo_bateria": 0.7,
                 "desafio_concluido": True,
 
             }),content_type="application/json")
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["tempo_conclusao_sec"], 123.4)
+        self.assertEqual(response.json()["velocidade_media"], 10.5)
+        self.assertEqual(response.json()["consumo_bateria"], 0.7)
         self.assertTrue(response.json()["desafio_concluido"])
 
     def test_finalizar_corrida_sem_barra_final(self):
