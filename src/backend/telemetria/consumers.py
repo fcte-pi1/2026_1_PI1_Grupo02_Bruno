@@ -21,7 +21,8 @@ class CorridaConsumer(AsyncWebsocketConsumer):
 
     # fecha a conexão
     async def disconnect(self, close_code):
-        await self.channel_layer.group_discard(self.group_name, self.channel_name)
+        if hasattr(self, "group_name"):
+            await self.channel_layer.group_discard(self.group_name, self.channel_name)
 
     # Chamado quando chega mensagem do grupo
     async def telemetria_update(self, event):

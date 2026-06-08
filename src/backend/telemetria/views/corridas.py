@@ -34,8 +34,15 @@ def _serializar_corrida_detalhe(corrida):
 
 
 @csrf_exempt
-@require_http_methods(["POST"])
+@require_http_methods(["GET", "POST"])
 def corridas(request):
+    if request.method == "GET":
+        registros = Corrida.objects.order_by("id")
+        return JsonResponse(
+            [_serializar_corrida_detalhe(corrida) for corrida in registros],
+            safe=False,
+        )
+
     try:
         dados = json.loads(request.body)
     except (json.JSONDecodeError, UnicodeDecodeError):

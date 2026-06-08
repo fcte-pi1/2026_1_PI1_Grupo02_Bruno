@@ -30,6 +30,46 @@ def telemetria_payload(**overrides):
 
 
 class CtSwApiTests(TestCase):
+    def test_ct_sw_09_historico_lista_corridas_em_ordem(self):
+        labirinto = Labirinto.objects.create(nome="Labirinto historico", tamanho=4)
+        em_andamento = Corrida.objects.create(labitinto_id=labirinto)
+        finalizada = Corrida.objects.create(
+            labitinto_id=labirinto,
+            tempo_conclusao_sec=88.2,
+            velocidade_med=1.7,
+            consumo_bat=0.44,
+            desafio_concluido=True,
+        )
+
+        response = self.client.get("/api/corridas/")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual([corrida["id"] for corrida in response.json()], [em_andamento.id, finalizada.id])
+        self.assertEqual(response.json()[0]["labirinto_id"], labirinto.id)
+        self.assertIsNone(response.json()[0]["tempo_conclusao_sec"])
+        self.assertFalse(response.json()[0]["desafio_concluido"])
+        self.assertEqual(response.json()[1]["tempo_conclusao_sec"], 88.2)
+        self.assertEqual(response.json()[1]["velocidade_media"], 1.7)
+        self.assertEqual(response.json()[1]["consumo_bateria"], 0.44)
+        self.assertTrue(response.json()[1]["desafio_concluido"])
+        self.assertIn("iniciado_em", response.json()[1])
+        self.assertIn("finalizado_em", response.json()[1])
+
+    def test_ct_sw_09_historico_vazio_e_post_continua_criando_corrida(self):
+        vazio_response = self.client.get("/api/corridas")
+        labirinto = Labirinto.objects.create(nome="Labirinto historico post", tamanho=4)
+
+        criar_response = self.client.post(
+            "/api/corridas",
+            data=json.dumps({"labirinto_id": labirinto.id}),
+            content_type="application/json",
+        )
+
+        self.assertEqual(vazio_response.status_code, 200)
+        self.assertEqual(vazio_response.json(), [])
+        self.assertEqual(criar_response.status_code, 201)
+        self.assertEqual(Corrida.objects.count(), 1)
+
     def test_ct_sw_03_criacao_de_sessao_finaliza_corrida_ativa_anterior(self):
         labirinto = Labirinto.objects.create(nome="Labirinto sessoes", tamanho=4)
         primeira = Corrida.objects.create(labitinto_id=labirinto)
@@ -175,6 +215,88 @@ class CtSwApiTests(TestCase):
             ),
             [(1, 0, 0), (2, 0, 1), (3, 1, 1)],
         )
+        trajeto_response = self.client.get(f"/api/corridas/{corrida.id}/trajeto/")
+        self.assertEqual(trajeto_response.status_code, 200)
+        self.assertEqual([estado["posicao_ordem"] for estado in trajeto_response.json()], [1, 2, 3])
+        self.assertEqual(trajeto_response.json()[0]["celula"]["linha"], 0)
+        self.assertEqual(trajeto_response.json()[2]["celula"]["coluna"], 1)
+        self.assertIn("registrado_em", trajeto_response.json()[0])
+
+    def test_ct_sw_05_trajeto_sem_barra_final_filtra_corrida_e_ordena(self):
+        labirinto = Labirinto.objects.create(nome="Labirinto trajeto filtrado", tamanho=4)
+        corrida_consultada = Corrida.objects.create(labitinto_id=labirinto)
+        outra_corrida = Corrida.objects.create(labitinto_id=labirinto)
+        celula_a = Celula.objects.create(
+            labirinto_id=labirinto,
+            linha=0,
+            coluna=0,
+            parede_norte="parede",
+            parede_sul="livre",
+            parede_leste="livre",
+            parede_oeste="parede",
+        )
+        celula_b = Celula.objects.create(
+            labirinto_id=labirinto,
+            linha=1,
+            coluna=0,
+            parede_norte="livre",
+            parede_sul="parede",
+            parede_leste="livre",
+            parede_oeste="parede",
+        )
+        EstadoAtual.objects.create(
+            corrida_id=outra_corrida,
+            celula_id=celula_a,
+            posicao_ordem=1,
+            x=9,
+            y=9,
+            direcao="sul",
+            velocidade=2,
+            bateria=0.2,
+        )
+        EstadoAtual.objects.create(
+            corrida_id=corrida_consultada,
+            celula_id=celula_b,
+            posicao_ordem=2,
+            x=0.5,
+            y=1.5,
+            direcao="sul",
+            velocidade=1.2,
+            bateria=0.7,
+        )
+        EstadoAtual.objects.create(
+            corrida_id=corrida_consultada,
+            celula_id=celula_a,
+            posicao_ordem=1,
+            x=0.5,
+            y=0.5,
+            direcao="norte",
+            velocidade=1.0,
+            bateria=0.9,
+        )
+
+        response = self.client.get(f"/api/corridas/{corrida_consultada.id}/trajeto")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual([estado["posicao_ordem"] for estado in response.json()], [1, 2])
+        self.assertEqual(response.json()[0]["x"], 0.5)
+        self.assertEqual(response.json()[0]["celula"]["linha"], 0)
+        self.assertEqual(response.json()[1]["celula"]["linha"], 1)
+
+    def test_ct_sw_05_trajeto_corrida_sem_telemetria_retorna_lista_vazia(self):
+        labirinto = Labirinto.objects.create(nome="Labirinto trajeto vazio", tamanho=4)
+        corrida = Corrida.objects.create(labitinto_id=labirinto)
+
+        response = self.client.get(f"/api/corridas/{corrida.id}/trajeto/")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), [])
+
+    def test_ct_sw_05_trajeto_corrida_inexistente_retorna_404(self):
+        response = self.client.get("/api/corridas/999/trajeto/")
+
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.json()["erro"], "Corrida nao encontrada.")
 
     def test_ct_sw_08_10_detalhe_exibe_resultado_persistido(self):
         labirinto = Labirinto.objects.create(nome="Labirinto detalhes", tamanho=8)
@@ -274,6 +396,11 @@ class CtSwWebSocketTests(TransactionTestCase):
 
         self.assertFalse(connected)
         self.assertEqual(close_code, 400)
+
+    def test_ct_sw_02_websocket_disconnect_sem_grupo_nao_gera_excecao(self):
+        consumer = CorridaConsumer()
+
+        async_to_sync(consumer.disconnect)(1000)
 
     def test_ct_sw_01_websocket_entrega_telemetria_recebida_pelo_grupo(self):
         consumer = CorridaConsumer()
