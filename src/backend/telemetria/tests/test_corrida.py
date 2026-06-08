@@ -331,3 +331,16 @@ class CorridasApiTests(TestCase):
             content_type="application/json")
         self.assertEqual(response.status_code, 404)
         self.assertEqual(response.json()["erro"], "Corrida nao encontrada.")
+
+    def test_finalizar_corrida_rejeita_json_invalido(self):
+        labirinto = Labirinto.objects.create(nome="Labirinto finalizar invalido", tamanho=4)
+        corrida = Corrida.objects.create(labitinto_id=labirinto)
+
+        response = self.client.patch(
+            f"/api/corridas/{corrida.id}/finalizar/",
+            data="{",
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json()["erro"], "JSON invalido.")
