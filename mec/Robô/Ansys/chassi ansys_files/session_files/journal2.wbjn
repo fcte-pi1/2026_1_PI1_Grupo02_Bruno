@@ -1,0 +1,18 @@
+# encoding: utf-8
+# 2026 R1
+SetScriptVersion(Version="26.1.174")
+system1 = GetSystem(Name="SYS")
+geometry1 = system1.GetContainer(ComponentName="Geometry")
+geometry1.SetFile(FilePath=GetAbsoluteUserPathName("UnB/4 sem/PI/Chassi/Final chassis/final chassis.stp"))
+modelComponent1 = system1.GetComponent(Name="Model")
+modelComponent1.Refresh()
+model1 = system1.GetContainer(ComponentName="Model")
+model1.Edit()
+model1.Exit()
+geometry1.SetFile(FilePath=GetAbsoluteUserPathName("UnB/4 sem/PI/Chassi/Final chassis/final chassis.stp"))
+model1.Edit()
+model1.Exit()
+geometry1.SetFile(FilePath=GetAbsoluteUserPathName("UnB/4 sem/PI/Chassi/Final chassis/final chassis.igs"))
+modelComponent1.Refresh()
+model1.Edit()
+Save(Overwrite=True)

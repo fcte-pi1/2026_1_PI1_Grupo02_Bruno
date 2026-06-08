@@ -12,7 +12,8 @@ export default function App() {
     const [faseAtual, setFaseAtual] = useState('labirinto01')
 
     return (
-        <BrowserRouter><Routes>
+        <BrowserRouter>
+      <Routes>
       <Route path="/testes" element={<Teste/>}></Route>
       <Route path="/" element={<Dahsboard/>}/>
       <Route path="/historico" element={<Historico/>}/>
