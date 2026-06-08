@@ -1,7 +1,7 @@
 from django.test import TestCase
 from datetime import datetime, timezone
 import json
-from telemetria.models import Labirinto, Corrida
+from telemetria.models import Celula, Corrida, EstadoAtual, Labirinto
 
 class CorridasApiTests(TestCase):
     endpoint = "/api/corridas"
@@ -149,6 +149,33 @@ class CorridasApiTests(TestCase):
         print(response.json())
         self.assertEqual(response.status_code, 201)
         self.assertIn("id", response.json())
+
+    def test_cria_telemetria_sem_barra_final(self):
+        labirinto = Labirinto.objects.create(nome="Labirinto telemetria sem barra", tamanho=4)
+        corrida = Corrida.objects.create(labitinto_id=labirinto)
+
+        response = self.client.post(
+            f"/api/corridas/{corrida.id}/telemetria",
+            data=json.dumps({
+                "linha": 1,
+                "coluna": 2,
+                "parede_norte": "livre",
+                "parede_sul": "parede",
+                "parede_leste": "desconhecido",
+                "parede_oeste": "livre",
+                "posicao_ordem": 3,
+                "x": 1.5,
+                "y": 2.5,
+                "direcao": "leste",
+                "velocidade": 1.2,
+                "bateria": 0.9,
+            }),
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(Celula.objects.count(), 1)
+        self.assertEqual(EstadoAtual.objects.count(), 1)
 
     def test_corrida_inexistente_404(self):
         response = self.client.post(f"/api/corridas/999/telemetria/",
