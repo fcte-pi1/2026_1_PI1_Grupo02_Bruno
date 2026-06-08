@@ -1,6 +1,8 @@
 import datetime
 import json
 
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
 from django.template.backends import django
 
 from django.utils import timezone
@@ -111,6 +113,33 @@ def telemetria(request,corrida_id):
         velocidade=dados.get("velocidade"),
         bateria=dados.get("bateria"),
     )
+
+    channel_layer= get_channel_layer()
+    async_to_sync(channel_layer.group_send)(
+        f"corrida_live",
+        {
+            "type": "telemetria_update",
+            "data": {
+                "corrida_id": corrida_id,
+                "posicao_ordem": registro.posicao_ordem,
+                "x": registro.x,
+                "y": registro.y,
+                "direcao": registro.direcao,
+                "velocidade": registro.velocidade,
+                "bateria": registro.bateria,
+                "celula":{
+                    "linha": celula.linha,
+                    "coluna": celula.coluna,
+                    "parede_norte": celula.parede_norte,
+                    "parede_sul": celula.parede_sul,
+                    "parede_leste": celula.parede_leste,
+                    "parede_oeste": celula.parede_oeste,
+
+                }
+
+            }
+        }
+    )
     return JsonResponse({"id":registro.id}, status=201)
 
 @require_http_methods(["GET"])
@@ -165,4 +194,12 @@ def finalizar(request,corrida_id):
     corrida.desafio_concluido=dados.get("desafio_concluido",False)
     corrida.finalizado_em=timezone.now()
     corrida.save()
+
+    channel_layer= get_channel_layer()
+    async_to_sync(channel_layer.group_send)(
+        "corrida_live",{
+            "type": "corrida_finalizada",
+            "data": _serializar_corrida_detalhe(corrida),
+        }
+    )
     return JsonResponse(_serializar_corrida_detalhe(corrida))

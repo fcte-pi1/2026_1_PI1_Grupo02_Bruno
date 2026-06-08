@@ -1,5 +1,7 @@
 import json
 
+from django.utils import timezone
+
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
@@ -53,6 +55,8 @@ def corridas(request):
         labirinto = Labirinto.objects.get(id=labirinto_id)
     except Labirinto.DoesNotExist:
         return JsonResponse({"erro": "Labirinto nao encontrado."}, status=404)
+
+    Corrida.objects.filter(finalizado_em__isnull=True).update(finalizado_em=timezone.now())
 
     corrida = Corrida.objects.create(labitinto_id=labirinto)
     return JsonResponse(_serializar_corrida(corrida), status=201)
