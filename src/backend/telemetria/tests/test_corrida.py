@@ -217,6 +217,12 @@ class CorridasApiTests(TestCase):
             response.json()["erro"], "Nenhuma telemetria encontrada."
         )
 
+    def test_estado_atual_corrida_inexistente(self):
+        response = self.client.get("/api/corridas/999/estado-atual/")
+
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.json()["erro"], "Corrida nao encontrada.")
+
     def test_estado_atual_com_telemetria(self):
         labirinto=Labirinto.objects.create(nome="Labirinto telemetria", tamanho=4)
         corrida = Corrida.objects.create(labitinto_id=labirinto)
