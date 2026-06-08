@@ -116,7 +116,7 @@ def telemetria(request,corrida_id):
 
     channel_layer= get_channel_layer()
     async_to_sync(channel_layer.group_send)(
-        f"corrida_{corrida_id}",
+        f"corrida_live",
         {
             "type": "telemetria_update",
             "data": {
@@ -193,4 +193,12 @@ def finalizar(request,corrida_id):
     corrida.desafio_concluido=dados.get("desafio_concluido",False)
     corrida.finalizado_em=timezone.now()
     corrida.save()
+
+    channel_layer= get_channel_layer()
+    async_to_sync(channel_layer.group_send)(
+        "corrida_live",{
+            "type": "corrida_finalizada",
+            "data": _serializar_corrida_detalhe(corrida),
+        }
+    )
     return JsonResponse(_serializar_corrida_detalhe(corrida))

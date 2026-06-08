@@ -12,9 +12,12 @@ import os
 from channels.auth import AuthMiddleware, AuthMiddlewareStack
 from django.core.asgi import get_asgi_application
 from channels.routing import ProtocolTypeRouter, URLRouter
-from telemetria import routing
+
+
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
+from telemetria import routing
+
 
 application = ProtocolTypeRouter({
     'http': get_asgi_application(),
