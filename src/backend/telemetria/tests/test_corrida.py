@@ -302,6 +302,29 @@ class CorridasApiTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.json()["desafio_concluido"])
 
+    def test_finalizar_corrida_sem_barra_final(self):
+        labirinto = Labirinto.objects.create(nome="Labirinto finalizar sem barra", tamanho=4)
+        corrida = Corrida.objects.create(labitinto_id=labirinto)
+
+        response = self.client.patch(
+            f"/api/corridas/{corrida.id}/finalizar",
+            data=json.dumps({
+                "tempo_conclusao_sec": 98.6,
+                "velocidade_media": 12.3,
+                "consumo_bateria": 0.4,
+                "desafio_concluido": True,
+            }),
+            content_type="application/json",
+        )
+
+        corrida.refresh_from_db()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["tempo_conclusao_sec"], 98.6)
+        self.assertEqual(response.json()["velocidade_media"], 12.3)
+        self.assertEqual(response.json()["consumo_bateria"], 0.4)
+        self.assertTrue(response.json()["desafio_concluido"])
+        self.assertIsNotNone(corrida.finalizado_em)
+
     def test_finalizar_corrida_inexistente(self):
         response = self.client.patch("/api/corridas/999/finalizar/",
             data=json.dumps({}),
