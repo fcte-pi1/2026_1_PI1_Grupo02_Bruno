@@ -245,6 +245,49 @@ class CorridasApiTests(TestCase):
         response2 = self.client.get(f"/api/corridas/{corrida.id}/estado-atual/")
         self.assertEqual(response2.status_code, 200)
 
+    def test_estado_atual_sem_barra_final_retorna_ultima_telemetria(self):
+        labirinto = Labirinto.objects.create(nome="Labirinto estado atual", tamanho=4)
+        corrida = Corrida.objects.create(labitinto_id=labirinto)
+        celula = Celula.objects.create(
+            labirinto_id=labirinto,
+            linha=2,
+            coluna=3,
+            parede_norte="livre",
+            parede_sul="parede",
+            parede_leste="livre",
+            parede_oeste="desconhecido",
+        )
+        EstadoAtual.objects.create(
+            corrida_id=corrida,
+            celula_id=celula,
+            posicao_ordem=1,
+            x=0.0,
+            y=0.0,
+            direcao="norte",
+            velocidade=0.5,
+            bateria=0.8,
+        )
+        EstadoAtual.objects.create(
+            corrida_id=corrida,
+            celula_id=celula,
+            posicao_ordem=2,
+            x=2.0,
+            y=3.0,
+            direcao="sul",
+            velocidade=1.5,
+            bateria=0.6,
+        )
+
+        response = self.client.get(f"/api/corridas/{corrida.id}/estado-atual")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["posicao_ordem"], 2)
+        self.assertEqual(response.json()["x"], 2.0)
+        self.assertEqual(response.json()["y"], 3.0)
+        self.assertEqual(response.json()["direcao"], "sul")
+        self.assertEqual(response.json()["celula"]["linha"], 2)
+        self.assertEqual(response.json()["celula"]["coluna"], 3)
+
     def test_finalizar_corrida(self):
         labiritinto=Labirinto.objects.create(nome="Labirinto finalizar", tamanho=4)
         corrida = Corrida.objects.create(labitinto_id=labiritinto)
