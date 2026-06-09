@@ -17,140 +17,49 @@ export default function Dashboard() {
     const [rastro, setRastro] = useState([])
     const [passoAtual, setPassoAtual] = useState(0)
 
-    const celulasMock = {
-        '0,0': {
-            linha: 0,
-            coluna: 0,
-            parede_norte: 'parede',
-            parede_sul: 'livre',
-            parede_leste: 'livre',
-            parede_oeste: 'parede'
-        },
-        '0,1': {
-            linha: 0,
-            coluna: 1,
-            parede_norte: 'parede',
-            parede_sul: 'parede',
-            parede_leste: 'livre',
-            parede_oeste: 'livre'
-        },
-        '0,2': {
-            linha: 0,
-            coluna: 2,
-            parede_norte: 'parede',
-            parede_sul: 'livre',
-            parede_leste: 'livre',
-            parede_oeste: 'livre'
-        },
-        '0,3': {
-            linha: 0,
-            coluna: 3,
-            parede_norte: 'parede',
-            parede_sul: 'livre',
-            parede_leste: 'parede',
-            parede_oeste: 'livre'
-        },
 
-        '1,0': {
-            linha: 1,
-            coluna: 0,
-            parede_norte: 'livre',
-            parede_sul: 'livre',
-            parede_leste: 'parede',
-            parede_oeste: 'parede'
-        },
-        '1,1': {
-            linha: 1,
-            coluna: 1,
-            parede_norte: 'parede',
-            parede_sul: 'livre',
-            parede_leste: 'livre',
-            parede_oeste: 'parede'
-        },
-        '1,2': {
-            linha: 1,
-            coluna: 2,
-            parede_norte: 'livre',
-            parede_sul: 'parede',
-            parede_leste: 'parede',
-            parede_oeste: 'livre'
-        },
-        '1,3': {
-            linha: 1,
-            coluna: 3,
-            parede_norte: 'livre',
-            parede_sul: 'livre',
-            parede_leste: 'parede',
-            parede_oeste: 'parede'
-        },
+    useEffect(() => {
+        let ws = null
+        let tentativas = 0
 
-        '2,0': {
-            linha: 2,
-            coluna: 0,
-            parede_norte: 'livre',
-            parede_sul: 'parede',
-            parede_leste: 'livre',
-            parede_oeste: 'parede'
-        },
-        '2,1': {
-            linha: 2,
-            coluna: 1,
-            parede_norte: 'livre',
-            parede_sul: 'livre',
-            parede_leste: 'parede',
-            parede_oeste: 'livre'
-        },
-        '2,2': {
-            linha: 2,
-            coluna: 2,
-            parede_norte: 'parede',
-            parede_sul: 'livre',
-            parede_leste: 'livre',
-            parede_oeste: 'parede'
-        },
-        '2,3': {
-            linha: 2,
-            coluna: 3,
-            parede_norte: 'livre',
-            parede_sul: 'parede',
-            parede_leste: 'parede',
-            parede_oeste: 'livre'
-        },
+        const conectar = () => {
+            ws = new WebSocket('ws://127.0.0.1:8000/ws/corrida/live/')
 
-        '3,0': {
-            linha: 3,
-            coluna: 0,
-            parede_norte: 'parede',
-            parede_sul: 'parede',
-            parede_leste: 'livre',
-            parede_oeste: 'parede'
-        },
-        '3,1': {
-            linha: 3,
-            coluna: 1,
-            parede_norte: 'livre',
-            parede_sul: 'parede',
-            parede_leste: 'livre',
-            parede_oeste: 'livre'
-        },
-        '3,2': {
-            linha: 3,
-            coluna: 2,
-            parede_norte: 'livre',
-            parede_sul: 'parede',
-            parede_leste: 'parede',
-            parede_oeste: 'livre'
-        },
-        '3,3': {
-            linha: 3,
-            coluna: 3,
-            parede_norte: 'parede',
-            parede_sul: 'parede',
-            parede_leste: 'parede',
-            parede_oeste: 'parede'
-        },
-    }
-    const chaves = Object.keys(celulasMock)
+            ws.onopen = () => {
+                console.log('Conectado ao WebSocket!')
+                tentativas = 0
+            }
+
+            ws.onmessage = (evento) => {
+                console.log('mensagem recebida:', JSON.parse(evento.data))
+                const data = JSON.parse(evento.data)
+
+                setPosicao({x: data.x, y: data.y})
+                setDirecao(data.direcao)
+                setVelocidade(data.velocidade)
+                setBateria(data.bateria)
+                setCelulasVisitadas(data.posicao_ordem)
+                setGrid(prev => ({...prev, [`${data.celula.linha},${data.celula.coluna}`]: data.celula}))
+                setRastro(prev => [...prev, {x: data.x, y: data.y, direcao: data.direcao}])
+            }
+
+            ws.onclose = () => {
+                console.log('WebSocket fechado, tentando reconectar...')
+                tentativas++
+                setTimeout(conectar, 2000) // tenta de novo após 2 segundos
+            }
+
+            ws.onerror = () => {
+                ws.close()
+            }
+        }
+
+        conectar()
+
+        return () => {
+            if (ws) ws.close()
+        }
+    }, [])
 
     // tempo cronometro
     useEffect(() => {

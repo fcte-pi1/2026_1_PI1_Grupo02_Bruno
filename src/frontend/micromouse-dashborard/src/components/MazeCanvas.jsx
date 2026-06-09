@@ -18,9 +18,7 @@ export default function MazeCanvas({fase, grid, setGrid, setRastro, mouseX, mous
     const fase_atual = fases[fase]
     const canvasRef = useRef(null)
 
-    useEffect(() => {
-        // const ws = new WebSocket(`ws://127.0.0.1:8000/ws/corrida/${corridaId}/live/`)
-    })
+
 
     useEffect(() => {
 
@@ -45,25 +43,25 @@ export default function MazeCanvas({fase, grid, setGrid, setRastro, mouseX, mous
                 ctx.lineWidth = 2
 
                 // desenha parede
-                if (celula.parede_norte == 'parede') {
+                if (celula.parede_norte == true) {
                     ctx.beginPath()
                     ctx.moveTo(x, y)
                     ctx.lineTo(x + tamanho, y)
                     ctx.stroke()
                 }
-                if (celula.parede_leste === 'parede') {
+                if (celula.parede_leste === true) {
                     ctx.beginPath()
                     ctx.moveTo(x + tamanho, y)
                     ctx.lineTo(x + tamanho, y + tamanho)
                     ctx.stroke()
                 }
-                if (celula.parede_oeste === 'parede') {
+                if (celula.parede_oeste === true) {
                     ctx.beginPath()
                     ctx.moveTo(x, y)
                     ctx.lineTo(x, y + tamanho)
                     ctx.stroke()
                 }
-                if (celula.parede_sul === 'parede') {
+                if (celula.parede_sul === true) {
                     ctx.beginPath()
                     ctx.moveTo(x, y + tamanho)
                     ctx.lineTo(x + tamanho, y + tamanho)
@@ -91,10 +89,10 @@ export default function MazeCanvas({fase, grid, setGrid, setRastro, mouseX, mous
                 const yR = y * tamanho + tamanho / 2
 
                 const angulos = {
-                    'Norte': -Math.PI / 2,
-                    'Sul': Math.PI / 2,
-                    'Leste': 0,
-                    'Oeste': Math.PI
+                    'N': -Math.PI / 2,
+                    'S': Math.PI / 2,
+                    'L': 0,
+                    'O': Math.PI
                 }
 
                 const angulo = angulos[direcao] ?? 0
