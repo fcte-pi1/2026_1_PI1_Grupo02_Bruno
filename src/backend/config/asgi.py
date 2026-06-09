@@ -9,8 +9,19 @@ https://docs.djangoproject.com/en/6.0/howto/deployment/asgi/
 
 import os
 
+from channels.auth import AuthMiddleware, AuthMiddlewareStack
 from django.core.asgi import get_asgi_application
+from channels.routing import ProtocolTypeRouter, URLRouter
+
+
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
+from telemetria import routing
 
-application = get_asgi_application()
+
+application = ProtocolTypeRouter({
+    'http': get_asgi_application(),
+    'websocket' : AuthMiddlewareStack(
+        URLRouter(routing.websocket_urlpatterns)
+    )
+})
