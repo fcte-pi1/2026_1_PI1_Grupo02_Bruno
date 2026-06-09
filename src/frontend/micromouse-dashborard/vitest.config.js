@@ -14,6 +14,8 @@ export default defineConfig({
         globals: true,
         setupFiles: ['./src/test/setup.js'],
         css: false,
+        // Os testes unitários/integração ficam em src; a pasta e2e é do Playwright.
+        include: ['src/**/*.{test,spec}.{js,jsx}'],
         coverage: {
             provider: 'v8',
             reporter: ['text', 'html', 'lcov'],
