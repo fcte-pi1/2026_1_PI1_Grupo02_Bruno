@@ -15,14 +15,14 @@ from channels.auth import AuthMiddlewareStack
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
 
-# ProtocolTypeRouter separa as requisições HTTP das WebSocket.
-# Requisições HTTP seguem o fluxo normal do Django.
-# Requisições WebSocket são roteadas para os consumers definidos em telemetria/routing.py.
+# ProtocolTypeRouter separa as requisicoes HTTP das WebSocket.
+# Requisicoes HTTP seguem o fluxo normal do Django.
+# Requisicoes WebSocket sao roteadas para os consumers definidos em telemetria/routing.py.
 #
 # ws/firmware/ — canal de entrada: a ESP32 WROOM 32E conecta aqui e envia
 #                os eventos de telemetria (run_started, cell_discovered, etc.)
-#                em tempo real durante a execução do labirinto.
-# ws/corrida/live/ — canal de saída: o frontend conecta aqui e recebe
+#                em tempo real durante a execucao do labirinto.
+# ws/corrida/live/ — canal de saida: o frontend conecta aqui e recebe
 #                    o broadcast dos eventos para atualizar o dashboard.
 from telemetria import routing
 
