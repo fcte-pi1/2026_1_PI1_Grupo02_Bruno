@@ -1,4 +1,4 @@
-# Documento de Arquitetura de Software
+# Arquitetura de Software
 
 ## 1. Introdução
 
