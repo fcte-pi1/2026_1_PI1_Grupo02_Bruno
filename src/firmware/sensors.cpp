@@ -5,8 +5,7 @@
 // esse código serve para configurarmos os sensores principalmente a questão da leitura deles e como eles vão se comportar
 void sensors_init() {
     // aqui a gente configura o pino da placa usando o pinmode, e como o sensor só devolve o valor a gente coloca ele como input
-    pinMode(IR_FRENTE_ESQ, INPUT);
-    pinMode(IR_FRENTE_DIR, INPUT);
+    pinMode(IR_FRENTE, INPUT);
     pinMode(IR_ESQUERDA,   INPUT);
     pinMode(IR_DIREITA,    INPUT);
 }
@@ -21,10 +20,8 @@ static int ler_sensor(int pino) {
 
 // retorna true se tem parede na frente 
 bool sensor_parede_frente() {
-    return (ler_sensor(IR_FRENTE_ESQ) > IR_LIMITE) ||
-           (ler_sensor(IR_FRENTE_DIR) > IR_LIMITE);
+    return (ler_sensor(IR_FRENTE) > IR_LIMITE);
 }
-
 // retorna true se tem parede na direita
 bool sensor_parede_direita() {
     return ler_sensor(IR_DIREITA) > IR_LIMITE;
