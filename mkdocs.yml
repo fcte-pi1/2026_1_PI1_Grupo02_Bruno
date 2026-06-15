@@ -36,7 +36,6 @@ theme:
     text: Inter
     code: JetBrains Mono
 
-
   icon:
     repo: fontawesome/brands/github
     logo: material/robot
@@ -64,11 +63,16 @@ nav:
      - Estrutura Analítica: pages/eap/eap.md
   - Entregas:
     - Energia: pages/energia/energia.md
-    - Estrutura: pages/estrutura/estrutura.md
-    - Hardware: pages/hardware/hardware.md
+    - Estrutura:
+      - Requisitos de Estrutura: pages/estrutura/requisitos-estrutura.md
+      - Chassi e Labirinto: pages/estrutura/estrutura.md
+    - Hardware:
+      - Requisitos de Hardware: pages/hardware/requisitos-hw.md
+      - Descrição de Hardware: pages/hardware/hardware.md
     - Software: 
       - Arquitetura de Software: pages/software/arquitetura_software.md
       - Backlog Priorizado: pages/software/backlog.md
+      - Diagrama de Atividades: pages/software/diagrama-atividades.md
       - Roteiro de Testes: pages/software/roteiro-de-testes.md
       - Sistema de Telemetria: pages/software/telemetria.md
 

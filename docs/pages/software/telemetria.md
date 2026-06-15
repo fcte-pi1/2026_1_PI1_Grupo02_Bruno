@@ -2,7 +2,7 @@
 
 ## 1. Objetivo
 
-O sistema de telemetria é responsável por coletar, transmitir, armazenar e disponibilizar informações geradas pelo Micromouse durante sua execução.
+O sistema de telemetria é responsável por **coletar**, **transmitir**, **armazenar** e **disponibilizar** informações geradas pelo Micromouse durante sua execução.
 
 A telemetria possui quatro objetivos principais:
 
@@ -13,7 +13,7 @@ A telemetria possui quatro objetivos principais:
 
 ---
 
-# 2. Arquitetura Geral
+## 2. Arquitetura Geral
 
 ```text
 ESP32
@@ -40,9 +40,9 @@ Frontend
 
 ---
 
-# 3. Princípios da Solução
+## 3. Princípios da Solução
 
-## 3.1 Arquitetura Orientada a Eventos
+### 3.1 Arquitetura Orientada a Eventos
 
 A telemetria será baseada em eventos.
 
@@ -50,7 +50,7 @@ O firmware não realizará streaming contínuo de sensores ou estados internos.
 
 Apenas acontecimentos relevantes serão transmitidos.
 
-Exemplos:
+**Exemplos:**
 
 * início de corrida;
 * descoberta de nova célula;
@@ -58,7 +58,7 @@ Exemplos:
 * cálculo da rota ótima;
 * finalização da corrida.
 
-Essa abordagem reduz:
+**Essa abordagem reduz:**
 
 * consumo de banda;
 * uso de memória;
@@ -66,7 +66,7 @@ Essa abordagem reduz:
 
 ---
 
-## 3.2 Fonte Primária dos Dados
+### 3.2 Fonte Primária dos Dados
 
 A ESP32 é considerada a fonte primária dos dados.
 
@@ -80,11 +80,11 @@ Caso a conexão seja perdida:
 
 ---
 
-# 4. Convenção Espacial
+## 4. Convenção Espacial
 
-## Sistema Cartesiano
+### 4.1 Sistema Cartesiano
 
-Origem:
+#### Origem:
 
 ```text
 (0,0)
@@ -92,7 +92,7 @@ Origem:
 
 Localizada no canto inferior esquerdo do labirinto.
 
-### Eixo X
+#### Eixo X
 
 Cresce para a direita (Leste).
 
@@ -100,7 +100,7 @@ Cresce para a direita (Leste).
 x++
 ```
 
-### Eixo Y
+#### Eixo Y
 
 Cresce para cima (Norte).
 
@@ -110,7 +110,7 @@ y++
 
 ---
 
-## Movimentação
+### 4.2 Movimentação
 
 | Direção | Operação |
 | ------- | -------- |
@@ -121,7 +121,7 @@ y++
 
 ---
 
-# 5. Estrutura Base dos Eventos
+## 5. Estrutura Base dos Eventos
 
 Todos os eventos devem possuir a seguinte estrutura:
 
@@ -135,7 +135,7 @@ Todos os eventos devem possuir a seguinte estrutura:
 }
 ```
 
-## Campos
+#### Campos
 
 | Campo        | Descrição                           |
 | ------------ | ----------------------------------- |
@@ -147,9 +147,9 @@ Todos os eventos devem possuir a seguinte estrutura:
 
 ---
 
-# 6. Eventos
+## 6. Eventos
 
-## 6.1 run_started
+### 6.1 run_started
 
 Disparado uma única vez ao iniciar uma corrida.
 
@@ -167,7 +167,7 @@ Disparado uma única vez ao iniciar uma corrida.
 }
 ```
 
-### Campos
+#### Campos
 
 | Campo     | Descrição                     |
 | --------- | ----------------------------- |
@@ -177,7 +177,7 @@ Disparado uma única vez ao iniciar uma corrida.
 
 ---
 
-## 6.2 cell_discovered
+### 6.2 cell_discovered
 
 Disparado sempre que o robô entra em uma nova célula.
 
@@ -195,7 +195,7 @@ Disparado sempre que o robô entra em uma nova célula.
 }
 ```
 
-### Campos
+#### Campos
 
 | Campo | Descrição          |
 | ----- | ------------------ |
@@ -205,7 +205,7 @@ Disparado sempre que o robô entra em uma nova célula.
 
 ---
 
-### Bitmask de Paredes
+#### Bitmask de Paredes
 
 | Parede | Bit | Valor |
 | ------ | --- | ----- |
@@ -214,7 +214,7 @@ Disparado sempre que o robô entra em uma nova célula.
 | Leste  | 2   | 4     |
 | Oeste  | 3   | 8     |
 
-### Exemplos
+#### Exemplos
 
 ```json
 {
@@ -242,7 +242,7 @@ Célula cercada por paredes.
 
 ---
 
-## 6.3 optimal_path_calculated
+### 6.3 optimal_path_calculated
 
 Disparado quando o algoritmo encontrar a rota ótima.
 
@@ -264,13 +264,13 @@ Disparado quando o algoritmo encontrar a rota ótima.
 }
 ```
 
-### Objetivo
+#### Objetivo
 
 Permitir que a interface web desenhe a rota calculada pelo FloodFill.
 
 ---
 
-## 6.4 fast_run_started
+### 6.4 fast_run_started
 
 Disparado imediatamente antes da corrida rápida.
 
@@ -285,7 +285,7 @@ Disparado imediatamente antes da corrida rápida.
 
 ---
 
-## 6.5 run_finished
+### 6.5 run_finished
 
 Disparado uma única vez ao finalizar a corrida.
 
@@ -303,7 +303,7 @@ Disparado uma única vez ao finalizar a corrida.
 }
 ```
 
-### Campos
+#### Campos
 
 | Campo   | Descrição           |
 | ------- | ------------------- |
@@ -313,13 +313,13 @@ Disparado uma única vez ao finalizar a corrida.
 
 ---
 
-# 7. Comunicação
+## 7. Comunicação
 
-## Protocolo
+### 7.1 Protocolo
 
 A comunicação ocorrerá utilizando WebSocket.
 
-Objetivos:
+#### Objetivo
 
 * Baixa latência;
 * Comunicação bidirecional;
@@ -327,11 +327,11 @@ Objetivos:
 
 ---
 
-# 8. Persistência Local
+## 8. Persistência Local
 
 A ESP32 deverá manter um buffer local contendo eventos ainda não confirmados.
 
-Estrutura conceitual:
+**Estrutura conceitual:**
 
 ```cpp
 struct TelemetryEvent {
@@ -340,16 +340,16 @@ struct TelemetryEvent {
 };
 ```
 
-Os eventos podem permanecer:
+**Os eventos podem permanecer:**
 
 * em RAM durante a execução;
 * em LittleFS para persistência prolongada.
 
 ---
 
-# 9. Reconexão
+## 9. Reconexão
 
-## Perda de Conexão
+### 9.1 Perda de Conexão
 
 Ao detectar desconexão:
 
@@ -360,7 +360,7 @@ Ao detectar desconexão:
 
 ---
 
-## ACK
+### 9.2 ACK
 
 O backend poderá confirmar o recebimento:
 
@@ -376,11 +376,11 @@ Após confirmação, os eventos podem ser removidos do buffer.
 
 ---
 
-# 10. Banco de Dados
+## 10. Banco de Dados
 
 O backend deverá armazenar:
 
-## Corridas
+### 10.1 Corridas
 
 * id_corrida
 * data
@@ -389,7 +389,7 @@ O backend deverá armazenar:
 * duração
 * sucesso
 
-## Eventos
+### 10.2 Eventos
 
 * event_id
 * id_corrida
@@ -399,11 +399,11 @@ O backend deverá armazenar:
 
 ---
 
-# 11. Reprodução de Corridas
+## 11. Reprodução de Corridas
 
 A reprodução deverá ser possível utilizando apenas os eventos armazenados.
 
-Fluxo:
+**Fluxo:**
 
 1. Recuperar eventos da corrida;
 2. Ordenar por timestamp;
@@ -412,7 +412,7 @@ Fluxo:
 
 ---
 
-# 12. Métricas Futuras
+## 12. Métricas Futuras
 
 A arquitetura deverá permitir expansão para:
 
@@ -427,29 +427,29 @@ A arquitetura deverá permitir expansão para:
 
 ---
 
-# 13. Responsabilidades
+## 13. Responsabilidades
 
-## Firmware
+### 13.1 Firmware
 
 * Gerar eventos;
 * Gerenciar buffer local;
 * Transmitir eventos;
 * Realizar retransmissão após reconexão.
 
-## Backend
+### 13.2 Backend
 
 * Receber eventos;
 * Validar eventos;
 * Persistir eventos;
 * Disponibilizar APIs.
 
-## Frontend
+### 13.3 Frontend
 
 * Visualização em tempo real;
 * Replay de corridas;
 * Dashboard de métricas.
 
-## Equipe de Dados
+### 13.4 Equipe de Dados
 
 * Definição de métricas;
 * Geração de relatórios;

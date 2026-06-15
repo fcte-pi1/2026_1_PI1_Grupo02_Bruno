@@ -72,18 +72,21 @@ O software do sistema RataTuring adota um banco de dados relacional SQLite para 
 
 
 ## 5. Visão de Processos
-
 O fluxo de controle do robô opera de forma cíclica e concorrente:
+
 **1. Aquisição:** O sistema realiza a varredura contínua dos sensores de distância e codificadores (encoders).
+
 **2. Processamento Lógico:** Os dados são filtrados e repassados ao algoritmo de inteligência, que mapeia as paredes e determina a direção da próxima célula.
+
 **3. Atuação:** A diferença entre a posição real e a desejada alimenta o controlador PID, que ajusta a potência enviada aos motores.
+
 **4. Comunicação Assíncrona:** A diferença entre a posição real e a desejada alimenta o controlador PID, que ajusta a potência enviada aos motores.
 
 ## 6. Visão de Implantação
 
 A infraestrutura do sistema é distribuída em três frentes principais:
 
-### 6.2 Nós de Implantação
+### 6.1 Nós de Implantação
 
 | Nó / Ambiente | Componentes hospedados | Comunicação / Rede |
 |---------------|----------------------|-------------------|
@@ -91,15 +94,17 @@ A infraestrutura do sistema é distribuída em três frentes principais:
 | Servidor Web | Back-end Django e Banco de Dados | TCP/IP e WebSockets |
 | Máquina do Operador| Interface Gráfica (Navegador)| HTTP/HTTPS |
 
-## 8. Visão de Dados
-### 8.1 Modelo de Dados
+## 7. Visão de Dados
+### 7.1 Modelo de Dados
 
 #### Diagrama Entidade-Relacionamento (DER)
 
- <img src="/assets/der.png" width="1200">
+<figure style="text-align: center; margin: 20px 0;">
+    <img src="../../../assets/der.png" width="750" alt="Diagrama Entidade-Relacionamento (DER)">
+</figure>
 
 
-### 8.3 Entidades Principais
+### 7.2 Entidades Principais
 
 | Entidade | Descrição | Relacionamentos |
 |----------|-----------|-----------------|
@@ -107,12 +112,3 @@ A infraestrutura do sistema é distribuída em três frentes principais:
 | Célula | Cada célula armazena o estado de suas 4 paredes( livre, parede ou desconhecido), permitindo mapeamento incremental. Existe independentemente da corrida. | Cada Célula pertence a um Labirinto (N:1) e pode ser referenciada por múltiplos registros de EstadoAtual. |
 | Corrida | Registra dados agregados e finais: tempo total, velocidade média e bateria, calculados ao final da partida. | Uma Corrida pertence a um Labirinto (N:1) e agrupa múltiplos registros de EstadoAtual (1:N) |
 | EstadoAtual | Registra cada ponto instantâneo de posição do robô ao longo da corrida, capturado a cada célula visitada. Os campos **velocidade_cms** e **bateria_v** representam valores no momento exato da visita. O campo **posicao_ordem** garante a reconstituição do trajeto a reconstituição do trajeto na ordem correta. | Cada registro pertence a uma Corrida (N:1) e referencia uma Célula (N:1). |
-
----
-
-## Histórico de Revisões
-
-| Data | Versão | Descrição | Autor |
-|------|--------|-----------|-------|
-| `07/05/2026` | `1.0` | Criação do documento | `Beatriz Figueiredo` |
-| `19/05/2026` | `1.1` | Atualização das informações | `Beatriz Figueiredo` |
