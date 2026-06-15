@@ -1,4 +1,4 @@
-# Dimensionamento Energético — MicroMouse
+# Dimensionamento Energético
 
 ## 1. Introdução
 

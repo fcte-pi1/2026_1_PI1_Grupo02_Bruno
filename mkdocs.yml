@@ -62,7 +62,10 @@ nav:
   - EAP do Projeto:
      - Estrutura Analítica: pages/eap/eap.md
   - Entregas:
-    - Energia: pages/energia/energia.md
+    - Energia: 
+      - Requisitos de Energia: pages/energia/requisitos-energia.md
+      - Dimensionamento Energético: pages/energia/dimensionamento.md
+      - Verificação e Validação: pages/energia/ver-val.md
     - Estrutura:
       - Requisitos de Estrutura: pages/estrutura/requisitos-estrutura.md
       - Chassi e Labirinto: pages/estrutura/estrutura.md
