@@ -80,7 +80,7 @@ nav:
       - Sistema de Telemetria: pages/software/telemetria.md
 
 extra_css:
-  - stylesheets/extra.css
+  - ../../stylesheets/extra.css
 exclude_docs: |
   relatorio/
   README.md
