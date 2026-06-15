@@ -4,34 +4,29 @@
 // trocar cada "??" pelos numeros de pinos condizentes na esp 
 // eu coloquei cada pino pra gente saber qual vai estar conectado no driver do TB6612FNG
 
-#define MOT_ESQ_INA1  ??
-#define MOT_ESQ_INA2  ??
-#define MOT_ESQ_PWMA  ??
+#define MOT_ESQ_INA1  25
+#define MOT_ESQ_INA2  26
+#define MOT_ESQ_PWMA  23
 
-#define MOT_DIR_INB1  ??
-#define MOT_DIR_INB2  ??
-#define MOT_DIR_PWMB  ??
-
-// no pinout/datasheet precisa colocar esse pino para a ponte H funcionar 
-#define MOT_STBY  ??
+#define MOT_DIR_INB1  4
+#define MOT_DIR_INB2  16
+#define MOT_DIR_PWMB  17
 
 //  pinos de encoders magnéticos dos motores, precisam ser pinos que permitam interrupção 
-#define ENC_ESQ_A  ??
-#define ENC_ESQ_B  ?? 
-#define ENC_DIR_A  ??
-#define ENC_DIR_B  ??
+#define ENC_ESQ_A  18
+#define ENC_ESQ_B  19 
+#define ENC_DIR_A  21
+#define ENC_DIR_B  22
 
 // pinos dos sensores, e os nossos sensores são sensores analógicos ent eles vâo devolver um valor de acordo com a distância da parede
 // por isso vamos definir um limite para quando o valor for maior do q X ele vai ter detectado uma parede
-
-#define IR_FRENTE_ESQ  ??
-#define IR_FRENTE_DIR  ??
-#define IR_ESQUERDA  ??
-#define IR_DIREITA  ??
+#define IR_FRENTE 33
+#define IR_ESQUERDA  32
+#define IR_DIREITA  35
 
 // testar na bancada qual o valor que vai ser retornado e que iremos definir para substituir aq depois 
 
-#define IR_LIMITE ??????
+#define IR_LIMITE 1500
 // aq temos o controle da frequencia e controle dos bits que iremos trabalhar
 // n sabia quanto colocar o gemini falou que 20khz é uma frequencia boa e que 8 bits é uma quantidade boa para trabalhar tambem
 // mas eu acho que talvez a gente vá diminuir a quantidade de bits n sei ainda 
@@ -57,9 +52,9 @@
 // o PID KP serve para quando uma roda estiver mais atrasada e ele vai dar um impulso nela pra compesar 
 // o PID KI serve para corrigir erros bem pequenos caso um motorfique mais fraco que o outro ou coisas do tipo (talvez nem precisemos usar)
 // o PID KD é o contrário do KP ele vai dar uma desacelerada pois caso o KP entre muito forte ele dá uma freiada para a correção não passar do ponto ideal
-#define PID_KP  ??
-#define PID_KI  ??
-#define PID_KD  ??
+#define PID_KP  1.0f
+#define PID_KI  0.1f
+#define PID_KD  0.0f
 
 // Velocidade base equivalente aos 8 bits escolhidos anteriormente (PWM 0–255)
 #define VEL_BASE      160
@@ -67,7 +62,7 @@
 #define VEL_MAX       220
 
 // leitura da bateria através do divisor de tensão
-#define BATERIA ??
+#define BATERIA 34
 
 // resistência em ohms dos resistores
 #define BAT_R1 10000.0f
