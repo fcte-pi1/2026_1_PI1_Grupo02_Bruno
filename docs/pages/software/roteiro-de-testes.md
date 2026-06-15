@@ -1,8 +1,9 @@
 # Roteiro de Teste Funcionais
 
-Os casos de teste apresentados nesta seção foram definidos com base nas histórias de usuário e nos critérios de aceitação estabelecidos para o projeto. Seu objetivo é verificar se as funcionalidades implementadas atendem aos requisitos especificados, garantindo a qualidade e o correto funcionamento do sistema.
+Os casos de teste apresentados nesta seção foram definidos com base nas **histórias de usuário** e nos **critérios de aceitação** estabelecidos para o projeto. Seu objetivo é verificar se as funcionalidades implementadas atendem aos requisitos especificados, garantindo a qualidade e o correto funcionamento do sistema.
+## Testes do Firmware
 
-## CT-SE-01 — Exploração do Labirinto
+### CT-SE-01 — Exploração do Labirinto
 
 | Campo                  | Descrição                                                                                                                                                                        |
 | ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -16,7 +17,7 @@ Os casos de teste apresentados nesta seção foram definidos com base nas histó
 
 ---
 
-## CT-SE-02 — Detecção de Obstáculos
+### CT-SE-02 — Detecção de Obstáculos
 
 | Campo                  | Descrição                                                                                                                                                 |
 | ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -30,7 +31,7 @@ Os casos de teste apresentados nesta seção foram definidos com base nas histó
 
 ---
 
-## CT-SE-03 — Atualização do Mapa
+### CT-SE-03 — Atualização do Mapa
 
 | Campo                  | Descrição                                                                                                                    |
 | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
@@ -44,7 +45,7 @@ Os casos de teste apresentados nesta seção foram definidos com base nas histó
 
 ---
 
-## CT-SE-04 — Encontrar Objetivo
+### CT-SE-04 — Encontrar Objetivo
 
 | Campo                  | Descrição                                                                                                     |
 | ---------------------- | ------------------------------------------------------------------------------------------------------------- |
@@ -58,7 +59,7 @@ Os casos de teste apresentados nesta seção foram definidos com base nas histó
 
 ---
 
-## CT-SE-05 — Planejar Rota
+### CT-SE-05 — Planejar Rota
 
 | Campo                  | Descrição                                                                                                                                        |
 | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -72,7 +73,8 @@ Os casos de teste apresentados nesta seção foram definidos com base nas histó
 
 ---
 
-## CT-SW-01 — Comunicação em Tempo Real
+## Testes do Sistema Web
+### CT-SW-01 — Comunicação em Tempo Real
 
 | Campo                  | Descrição                                                                                                           |
 | ---------------------- | ------------------------------------------------------------------------------------------------------------------- |
@@ -86,7 +88,7 @@ Os casos de teste apresentados nesta seção foram definidos com base nas histó
 
 ---
 
-## CT-SW-02 — Reconexão Automática
+### CT-SW-02 — Reconexão Automática
 
 | Campo                  | Descrição                                                                                               |
 | ---------------------- | ------------------------------------------------------------------------------------------------------- |
@@ -100,7 +102,7 @@ Os casos de teste apresentados nesta seção foram definidos com base nas histó
 
 ---
 
-## CT-SW-03 — Iniciar Sessão
+### CT-SW-03 — Iniciar Sessão
 
 | Campo                  | Descrição                                                                                                          |
 | ---------------------- | ------------------------------------------------------------------------------------------------------------------ |
@@ -114,7 +116,7 @@ Os casos de teste apresentados nesta seção foram definidos com base nas histó
 
 ---
 
-## CT-SW-04 — Exibir Posição
+### CT-SW-04 — Exibir Posição
 
 | Campo                  | Descrição                                                                           |
 | ---------------------- | ----------------------------------------------------------------------------------- |
@@ -128,7 +130,7 @@ Os casos de teste apresentados nesta seção foram definidos com base nas histó
 
 ---
 
-## CT-SW-05 — Exibir Caminho Percorrido
+### CT-SW-05 — Exibir Caminho Percorrido
 
 | Campo                  | Descrição                                                                         |
 | ---------------------- | --------------------------------------------------------------------------------- |
@@ -142,7 +144,7 @@ Os casos de teste apresentados nesta seção foram definidos com base nas histó
 
 ---
 
-## CT-SW-06 — Exibir Status do Robô
+### CT-SW-06 — Exibir Status do Robô
 
 | Campo                  | Descrição                                                                                                              |
 | ---------------------- | ---------------------------------------------------------------------------------------------------------------------- |
@@ -156,7 +158,7 @@ Os casos de teste apresentados nesta seção foram definidos com base nas histó
 
 ---
 
-## CT-SW-07 — Exibir Status do Desafio
+### CT-SW-07 — Exibir Status do Desafio
 
 | Campo                  | Descrição                                                                                       |
 | ---------------------- | ----------------------------------------------------------------------------------------------- |
@@ -170,7 +172,7 @@ Os casos de teste apresentados nesta seção foram definidos com base nas histó
 
 ---
 
-## CT-SW-08 — Registrar Dados Finais
+### CT-SW-08 — Registrar Dados Finais
 
 | Campo                  | Descrição                                                                                 |
 | ---------------------- | ----------------------------------------------------------------------------------------- |
@@ -184,7 +186,7 @@ Os casos de teste apresentados nesta seção foram definidos com base nas histó
 
 ---
 
-## CT-SW-09 — Consultar Histórico
+### CT-SW-09 — Consultar Histórico
 
 | Campo                  | Descrição                                                                        |
 | ---------------------- | -------------------------------------------------------------------------------- |
@@ -198,7 +200,7 @@ Os casos de teste apresentados nesta seção foram definidos com base nas histó
 
 ---
 
-## CT-SW-10 — Consultar Corrida Individual
+### CT-SW-10 — Consultar Corrida Individual
 
 | Campo                  | Descrição                                                                                                          |
 | ---------------------- | ------------------------------------------------------------------------------------------------------------------ |
