@@ -181,10 +181,6 @@ Disparado uma única vez ao iniciar uma corrida.
 
 Disparado sempre que o robô entra em uma nova célula.
 
-O campo `bateria` representa o nível atual da bateria no momento do evento.
-Isso permite que o backend e o frontend exibam a variação real da bateria
-ao longo da exploração, sem depender de estimativas.
-
 ```json
 {
   "event_id": 2,
@@ -194,7 +190,14 @@ ao longo da exploração, sem depender de estimativas.
   "payload": {
     "x": 2,
     "y": 1,
-    "w": 5,
+    "linha": 1,
+    "coluna": 2,
+    "parede_norte": false,
+    "parede_sul": false,
+    "parede_leste": true,
+    "parede_oeste": false,
+    "direcao": "N",
+    "velocidade": 0.3,
     "bateria": 97.3
   }
 }
@@ -202,49 +205,19 @@ ao longo da exploração, sem depender de estimativas.
 
 ### Campos
 
-| Campo   | Descrição                                    |
-| ------- | -------------------------------------------- |
-| x       | Coordenada X                                 |
-| y       | Coordenada Y                                 |
-| w       | Máscara de paredes                           |
-| bateria | Percentual atual da bateria neste evento (%) |
-
----
-
-### Bitmask de Paredes
-
-| Parede | Bit | Valor |
-| ------ | --- | ----- |
-| Norte  | 0   | 1     |
-| Sul    | 1   | 2     |
-| Leste  | 2   | 4     |
-| Oeste  | 3   | 8     |
-
-### Exemplos
-
-```json
-{
-  "w": 1
-}
-```
-
-Parede ao Norte.
-
-```json
-{
-  "w": 5
-}
-```
-
-Parede ao Norte e Leste.
-
-```json
-{
-  "w": 15
-}
-```
-
-Célula cercada por paredes.
+| Campo        | Descrição                                         |
+| ------------ | ------------------------------------------------- |
+| x            | Coordenada X (coluna, cresce para Leste)          |
+| y            | Coordenada Y (linha, cresce para Norte)           |
+| linha        | Alias de y — usado pelo backend para indexar célula |
+| coluna       | Alias de x — usado pelo backend para indexar célula |
+| parede_norte | `true` se há parede ao Norte                      |
+| parede_sul   | `true` se há parede ao Sul                        |
+| parede_leste | `true` se há parede ao Leste                      |
+| parede_oeste | `true` se há parede ao Oeste                      |
+| direcao      | Direção atual do robô: `"N"`, `"S"`, `"L"`, `"O"` |
+| velocidade   | Velocidade instantânea em m/s                     |
+| bateria      | Percentual atual da bateria neste evento (%)      |
 
 ---
 

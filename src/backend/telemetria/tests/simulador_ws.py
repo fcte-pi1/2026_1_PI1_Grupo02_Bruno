@@ -43,10 +43,7 @@ def evento_run_started(event_id=1):
     }
 
 
-def evento_cell_discovered(event_id, x, y, w, bateria):
-    """
-    w — bitmask de paredes: Norte=1, Sul=2, Leste=4, Oeste=8
-    """
+def evento_cell_discovered(event_id, x, y, norte, sul, leste, oeste, direcao, velocidade, bateria):
     return {
         "event_id": event_id,
         "timestamp_ms": event_id * 500,
@@ -54,7 +51,14 @@ def evento_cell_discovered(event_id, x, y, w, bateria):
         "payload": {
             "x": x,
             "y": y,
-            "w": w,
+            "linha": y,
+            "coluna": x,
+            "parede_norte": norte,
+            "parede_sul":   sul,
+            "parede_leste": leste,
+            "parede_oeste": oeste,
+            "direcao": direcao,
+            "velocidade": velocidade,
             "bateria": bateria,
         },
     }
@@ -130,21 +134,22 @@ async def simular():
             event_id += 1
 
             # 2. cell_discovered — percorre um labirinto 4x4 em zigue-zague
-            # Bitmask: células de borda têm paredes externas
+            # Colunas: norte, sul, leste, oeste, direcao, velocidade, bateria
             celulas = [
-                (0, 0, 9,  99.0),   # x=0,y=0 — parede Norte(1)+Oeste(8)=9
-                (1, 0, 1,  98.5),   # x=1,y=0 — parede Norte(1)
-                (2, 0, 1,  98.0),
-                (3, 0, 5,  97.5),   # x=3,y=0 — parede Norte(1)+Leste(4)=5
-                (3, 1, 4,  97.0),   # parede Leste(4)
-                (2, 1, 0,  96.5),   # sem paredes internas
-                (1, 1, 0,  96.0),
-                (0, 1, 8,  95.5),   # parede Oeste(8)
+                #  x   y   N      S      L      O      dir   vel   bat
+                (0, 0, True,  False, False, True,  'N', 0.0,  99.0),  # canto NO
+                (1, 0, True,  False, False, False, 'L', 0.15, 98.5),
+                (2, 0, True,  False, False, False, 'L', 0.20, 98.0),
+                (3, 0, True,  False, True,  False, 'N', 0.22, 97.5),  # canto NE
+                (3, 1, False, False, True,  False, 'S', 0.25, 97.0),
+                (2, 1, False, False, False, False, 'O', 0.25, 96.5),
+                (1, 1, False, False, False, False, 'O', 0.25, 96.0),
+                (0, 1, False, False, False, True,  'S', 0.25, 95.5),
             ]
 
-            for x, y, w, bat in celulas:
-                ev = evento_cell_discovered(event_id, x, y, w, bat)
-                resultado = await enviar_e_aguardar_ack(ws, ev, f"cell_discovered ({x},{y}) w={w}")
+            for x, y, norte, sul, leste, oeste, direcao, vel, bat in celulas:
+                ev = evento_cell_discovered(event_id, x, y, norte, sul, leste, oeste, direcao, vel, bat)
+                resultado = await enviar_e_aguardar_ack(ws, ev, f"cell_discovered ({x},{y}) dir={direcao}")
                 if resultado is None:
                     return
                 event_id += 1

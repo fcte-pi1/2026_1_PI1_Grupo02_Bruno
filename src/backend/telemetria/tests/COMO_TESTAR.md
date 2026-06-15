@@ -46,14 +46,14 @@ Conectando em ws://localhost:8000/ws/firmware/ ...
 Conexão estabelecida.
 
   [OK] run_started — ack=1, corrida_id=<N>
-  [OK] cell_discovered (0,0) w=9 — ack=2
-  [OK] cell_discovered (1,0) w=1 — ack=3
-  [OK] cell_discovered (2,0) w=1 — ack=4
-  [OK] cell_discovered (3,0) w=5 — ack=5
-  [OK] cell_discovered (3,1) w=4 — ack=6
-  [OK] cell_discovered (2,1) w=0 — ack=7
-  [OK] cell_discovered (1,1) w=0 — ack=8
-  [OK] cell_discovered (0,1) w=8 — ack=9
+  [OK] cell_discovered (0,0) dir=N — ack=2
+  [OK] cell_discovered (1,0) dir=L — ack=3
+  [OK] cell_discovered (2,0) dir=L — ack=4
+  [OK] cell_discovered (3,0) dir=N — ack=5
+  [OK] cell_discovered (3,1) dir=S — ack=6
+  [OK] cell_discovered (2,1) dir=O — ack=7
+  [OK] cell_discovered (1,1) dir=O — ack=8
+  [OK] cell_discovered (0,1) dir=S — ack=9
   [OK] optimal_path_calculated — ack=10
   [OK] fast_run_started — ack=11
   [OK] run_finished — ack=12

@@ -141,25 +141,30 @@ class FirmwareConsumer(AsyncWebsocketConsumer):
 
     @database_sync_to_async
     def _salvar_celula(self, payload, bateria_atual=100.0):
-        # payload: { x, y, w, bateria } — conforme telemetria.md
+        # payload: { x, y, linha, coluna, parede_norte, parede_sul, parede_leste,
+        #            parede_oeste, direcao, velocidade, bateria }
         from .models import Corrida, Celula, EstadoAtual
 
         corrida = Corrida.objects.get(id=self.corrida_id)
 
-        x = payload.get('x', 0)
-        y = payload.get('y', 0)
+        x      = payload.get('x', 0)
+        y      = payload.get('y', 0)
+        linha  = payload.get('linha',  y)   # alias de y; usa y como fallback
+        coluna = payload.get('coluna', x)   # alias de x; usa x como fallback
 
-        # Decodifica bitmask de paredes: Norte=1, Sul=2, Leste=4, Oeste=8
-        w = payload.get('w', 0)
-        p_norte = 'parede' if (w & 1) else 'livre'
-        p_sul   = 'parede' if (w & 2) else 'livre'
-        p_leste = 'parede' if (w & 4) else 'livre'
-        p_oeste = 'parede' if (w & 8) else 'livre'
+        # Paredes enviadas explicitamente como booleanos
+        p_norte = 'parede' if payload.get('parede_norte', False) else 'livre'
+        p_sul   = 'parede' if payload.get('parede_sul',   False) else 'livre'
+        p_leste = 'parede' if payload.get('parede_leste', False) else 'livre'
+        p_oeste = 'parede' if payload.get('parede_oeste', False) else 'livre'
+
+        direcao    = payload.get('direcao',    'N')
+        velocidade = float(payload.get('velocidade', 0.0))
 
         celula, _ = Celula.objects.get_or_create(
             labirinto_id=corrida.labitinto_id,
-            linha=y,
-            coluna=x,
+            linha=linha,
+            coluna=coluna,
             defaults={
                 'parede_norte': p_norte,
                 'parede_sul':   p_sul,
@@ -176,8 +181,8 @@ class FirmwareConsumer(AsyncWebsocketConsumer):
             posicao_ordem=ordem,
             x=float(x),
             y=float(y),
-            direcao='N',
-            velocidade=0.0,
+            direcao=direcao,
+            velocidade=velocidade,
             bateria=bateria_atual,
         )
 
