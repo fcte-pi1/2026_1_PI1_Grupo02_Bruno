@@ -16,8 +16,16 @@ public:
     static void sendRunStarted(int dimensao, int tentativa, int bateria);
     static void sendCellDiscovered(int x, int y, bool p_norte, bool p_sul, bool p_leste, bool p_oeste, const char* direcao, float velocidade, float bateria);
     static void sendRunFinished(bool sucesso, float v_med, float bateria);
-
+    
 private:
+    static void adicionarAoBuffer(String json);
+    static bool processarBuffer();
+
+    static const int BUFFER_SIZE = 50;
+    static String eventBuffer[BUFFER_SIZE];
+    static int head;
+    static int tail;
+    static int count;
     
 };
 

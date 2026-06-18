@@ -3,6 +3,33 @@
 #include "TelemetryTypes.h"
 #include <ArduinoJson.h>
 
+int Telemetry::head = 0;
+int Telemetry::tail = 0;
+int Telemetry::count = 0;
+String Telemetry::eventBuffer[50];
+
+void Telemetry::adicionarAoBuffer(String json){
+    if(count < BUFFER_SIZE){
+        eventBuffer[tail] = json;
+        tail = (tail + 1) % BUFFER_SIZE;
+        count++;
+    }
+}
+
+bool Telemetry::processarBuffer(){
+    if(count > 0){
+        String json = eventBuffer[head];
+        // funcao de envio do websocket vai ser chamada aqui
+        // if(websocket.send(json)){
+            head = (head + 1) % BUFFER_SIZE;
+            count--;
+            return true;
+
+        //}
+    }
+    return false;
+}
+
 
 static uint32_t next_event_id = 1;
 
@@ -32,6 +59,7 @@ void Telemetry::sendRunStarted(int dimensao, int tentativa, int bateria) {
     
     String output;
     serializeJson(doc, output);
+    adicionarAoBuffer(output);
 }
 
 void Telemetry::sendCellDiscovered(int x, int y, bool p_norte, bool p_sul, bool p_leste, bool p_oeste, const char* direcao, float velocidade, float bateria) {
