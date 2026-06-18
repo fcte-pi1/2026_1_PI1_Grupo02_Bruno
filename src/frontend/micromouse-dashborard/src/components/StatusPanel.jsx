@@ -55,8 +55,7 @@ export default function StatusPanel({
                 </div>
             </div>
             <div id='cronometro'>
-                <Cronometro tempo={tempo} onTempo={onTempo}
-                            onToglle={onToggle} rodando={rodando}/>
+                <Cronometro tempo={tempo}/>
             </div>
             <div id='metricas'>
                 {<MetriCard titulo={Bateria} valor={bateria} onValor={onBateria} unidade={'%'} showBarra={true}/>}
