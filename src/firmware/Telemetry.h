@@ -1,6 +1,8 @@
 #ifndef TELEMETRY_H
 #define TELEMETRY_H
 
+#include <WebSocketsClient.h>
+
 /**
  * @brief Interface de telemetria para o Micromouse.
  * 
@@ -18,6 +20,8 @@ public:
     static void sendRunFinished(bool sucesso, float v_med, float bateria);
     
 private:
+    static void webSocketEvent(WStype_t type, uint8_t * payload, size_t length);
+    static WebSocketsClient webSocket;
     static void adicionarAoBuffer(String json);
     static bool processarBuffer();
 

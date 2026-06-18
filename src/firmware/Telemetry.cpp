@@ -7,6 +7,56 @@ int Telemetry::head = 0;
 int Telemetry::tail = 0;
 int Telemetry::count = 0;
 String Telemetry::eventBuffer[50];
+WebSocketsClient Telemetry::webSocket;
+
+const char* host = "192.168.1.100"; // MUDAR PARA O IP DO SEU BACKEND
+const int port = 8000;              // Porta padrão do Django
+
+static uint32_t next_event_id = 1;
+
+static void montarJsonBase(JsonDocument& doc, const char* tipo) {
+    doc["event_id"] = next_event_id++;
+    doc["id_corrida"] = 1;
+    doc["timestamp_ms"] = millis();
+    doc["tipo"] = tipo;
+}
+
+void Telemetry::init() {
+    webSocket.begin(host, port, "/ws/firmware/");
+    webSocket.onEvent(Telemetry::webSocketEvent);
+    webSocket.setReconnectInterval(5000);
+}
+
+void Telemetry::process() {
+    webSocket.loop();
+    if (webSocket.isConnected()) {
+        processarBuffer();
+    }
+}
+
+void Telemetry::webSocketEvent(WStype_t type, uint8_t * payload, size_t length) {
+    switch(type) {
+        case WStype_TEXT: {
+            StaticJsonDocument<64> doc;
+            DeserializationError error = deserializeJson(doc, payload);
+            if (!error && doc.containsKey("ack")) {
+                // O servidor confirmou o recebimento do evento mais antigo!
+                // Agora sim, removemos do buffer com segurança.
+                if(count > 0) {
+                    head = (head + 1) % BUFFER_SIZE;
+                    count--;
+                }
+            }
+            break;
+        }
+        case WStype_DISCONNECTED:
+            // Log: conexão perdida
+            break;
+        case WStype_CONNECTED:
+            // Log: conectado ao servidor
+            break;
+    }
+}
 
 void Telemetry::adicionarAoBuffer(String json){
     if(count < BUFFER_SIZE){
@@ -19,33 +69,12 @@ void Telemetry::adicionarAoBuffer(String json){
 bool Telemetry::processarBuffer(){
     if(count > 0){
         String json = eventBuffer[head];
-        // funcao de envio do websocket vai ser chamada aqui
-        // if(websocket.send(json)){
-            head = (head + 1) % BUFFER_SIZE;
-            count--;
+        // Tentamos enviar. Se o WiFi estiver ok, ele envia.
+        if(webSocket.sendTXT(json)){
             return true;
-
-        //}
+        }
     }
     return false;
-}
-
-
-static uint32_t next_event_id = 1;
-
-static void montarJsonBase(JsonDocument& doc, const char* tipo) {
-    doc["event_id"] = next_event_id++;
-    doc["id_corrida"] = 1;
-    doc["timestamp_ms"] = millis();
-    doc["tipo"] = tipo;
-}
-
-void Telemetry::init() {
-    
-}
-
-void Telemetry::process() {
-    
 }
 
 void Telemetry::sendRunStarted(int dimensao, int tentativa, int bateria) {
@@ -79,6 +108,7 @@ void Telemetry::sendCellDiscovered(int x, int y, bool p_norte, bool p_sul, bool 
     
     String output;
     serializeJson(doc, output);
+    adicionarAoBuffer(output);
 }
 
 void Telemetry::sendRunFinished(bool sucesso, float v_med, float bateria) {
@@ -92,4 +122,5 @@ void Telemetry::sendRunFinished(bool sucesso, float v_med, float bateria) {
     
     String output;
     serializeJson(doc, output);
+    adicionarAoBuffer(output);
 }
