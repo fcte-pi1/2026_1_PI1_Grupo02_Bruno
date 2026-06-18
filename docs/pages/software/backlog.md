@@ -1,16 +1,16 @@
 # Backlog do Produto de Software
 
-O Backlog do Produto foi elaborado com o objetivo de organizar e priorizar os requisitos necessários para o desenvolvimento do sistema de monitoramento e navegação autônoma do Micromouse. Sua estrutura é baseada em histórias de usuário, requisitos não funcionais e critérios de aceitação, permitindo a rastreabilidade das funcionalidades ao longo do ciclo de desenvolvimento.
+O **Backlog do Produto** foi elaborado com o objetivo de organizar e priorizar os requisitos necessários para o desenvolvimento do sistema de monitoramento e navegação autônoma do Micromouse. Sua estrutura é baseada em **histórias de usuário**, **requisitos não funcionais** e **critérios de aceitação**, permitindo a rastreabilidade das funcionalidades ao longo do ciclo de desenvolvimento.
 
-As funcionalidades foram agrupadas em épicos que representam os principais domínios do sistema, abrangendo desde a navegação autônoma do robô e a comunicação de telemetria até a interface web e o histórico de corridas. Cada história de usuário foi escrita seguindo o padrão “Como [ator], quero [funcionalidade], para [benefício]” e classificada conforme a técnica de priorização MoSCoW (Must Have, Should Have, Could Have e Won't Have), auxiliando na definição do escopo de cada entrega.
+As funcionalidades foram agrupadas em **épicos** que representam os principais domínios do sistema, abrangendo desde a navegação autônoma do robô e a comunicação de telemetria até a interface web e o histórico de corridas.
+
+Cada história de usuário foi escrita seguindo o padrão “**Como** *[ator]*, **quero** *[funcionalidade]*, **para** *[benefício]*” e classificada conforme a técnica de priorização **MoSCoW** (Must Have, Should Have, Could Have e Won't Have), auxiliando na definição do escopo de cada entrega.
 
 Além dos requisitos funcionais, o backlog contempla requisitos não funcionais relacionados à autonomia do robô, desempenho da telemetria, persistência dos dados e escalabilidade da solução. Os critérios de aceitação e as tarefas associadas a cada item servem como referência para implementação, validação e acompanhamento das atividades do projeto.
 
-Além disso, cada história possui critérios de aceitação definidos e rastreabilidade garantida por meio de *issues* no GitHub.
+## Product Backlog
 
-# Product Backlog
-
-## Épico B: Navegação Autônoma
+### Épico B: Navegação Autônoma
 
 | ID        | Título da História   | MoSCoW    | História de Usuário                                                                                | Critérios de Aceite                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 | --------- | -------------------- | --------- | -------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -22,7 +22,7 @@ Além disso, cada história possui critérios de aceitação definidos e rastrea
 
 ---
 
-## Épico C: Telemetria
+### Épico C: Telemetria
 
 | ID        | Título da História        | MoSCoW     | História de Usuário                                                                                           | Critérios de Aceite                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | --------- | ------------------------- | ---------- | ------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -31,7 +31,7 @@ Além disso, cada história possui critérios de aceitação definidos e rastrea
 
 ---
 
-## Épico D: Interface Web
+### Épico D: Interface Web
 
 | ID        | Título da História              | MoSCoW      | História de Usuário                                                                         | Critérios de Aceite                                                                                                                                                                                                                                                                                                                                                                                                    |
 | --------- | ------------------------------- | ----------- | ------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -43,7 +43,7 @@ Além disso, cada história possui critérios de aceitação definidos e rastrea
 
 ---
 
-## Épico E: Histórico de Corridas
+### Épico E: Histórico de Corridas
 
 | ID        | Título da História           | MoSCoW    | História de Usuário                                                                          | Critérios de Aceite                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 | --------- | ---------------------------- | --------- | -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -53,7 +53,7 @@ Além disso, cada história possui critérios de aceitação definidos e rastrea
 
 ---
 
-# Tabela de Requisitos Não Funcionais (RNF)
+## Tabela de Requisitos Não Funcionais (RNF)
 
 | ID HU      | REQ                                                                               | Pertence ao USM               | Descrição                                                                    | Critérios de Aceitação                                                                                                                                       | Tarefas                                                                          |
 | ---------- | --------------------------------------------------------------------------------- | ----------------------------- | ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------- |
