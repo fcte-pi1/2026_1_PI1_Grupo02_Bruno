@@ -74,10 +74,10 @@ export default function MazeCanvas({fase, grid, setGrid, setRastro, mouseX, mous
             const mX = mouseX * tamanho + tamanho / 2
             const mY = mouseY * tamanho + tamanho / 2
 
-            console.log('mouseX:', mouseX)
-            console.log('mouseY:', mouseY)
-            console.log('mX:', mX)
-            console.log('mY:', mY)
+            // console.log('mouseX:', mouseX)
+            // console.log('mouseY:', mouseY)
+            // console.log('mX:', mX)
+            // console.log('mY:', mY)
 
             ctx.beginPath()
             ctx.arc(mX, mY, tamanho / 3, 0, Math.PI * 2)// desenho o criculo do ratinho
