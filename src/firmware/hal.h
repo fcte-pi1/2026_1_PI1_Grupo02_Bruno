@@ -1,9 +1,6 @@
 #pragma once
 
-// ajuste dos pinos fisicos no código
-// trocar cada "??" pelos numeros de pinos condizentes na esp 
-// eu coloquei cada pino pra gente saber qual vai estar conectado no driver do TB6612FNG
-
+// ── Motores (TB6612FNG) ───────────────────────────────────────────────────
 #define MOT_ESQ_INA1  25
 #define MOT_ESQ_INA2  26
 #define MOT_ESQ_PWMA  23
@@ -12,66 +9,71 @@
 #define MOT_DIR_INB2  16
 #define MOT_DIR_PWMB  17
 
-//  pinos de encoders magnéticos dos motores, precisam ser pinos que permitam interrupção 
+// ── Encoders magnéticos (pinos com suporte a interrupção) ─────────────────
 #define ENC_ESQ_A  18
-#define ENC_ESQ_B  19 
+#define ENC_ESQ_B  19
 #define ENC_DIR_A  21
 #define ENC_DIR_B  22
 
-// pinos dos sensores, e os nossos sensores são sensores analógicos ent eles vâo devolver um valor de acordo com a distância da parede
-// por isso vamos definir um limite para quando o valor for maior do q X ele vai ter detectado uma parede
-#define IR_FRENTE 33
+// ── Sensores IR (TCRT5000, saída analógica) ───────────────────────────────
+#define IR_FRENTE    33
 #define IR_ESQUERDA  32
-#define IR_DIREITA  35
+#define IR_DIREITA   35
 
-// testar na bancada qual o valor que vai ser retornado e que iremos definir para substituir aq depois 
+// ── Bateria (divisor de tensão) ───────────────────────────────────────────
+#define BATERIA      34
+#define BAT_R1       10000.0f
+#define BAT_R2       4700.0f
+#define BAT_VREF     3.3f
+#define BAT_ADC_BITS 4095.0f
+#define BAT_VMAX     2.8f
+#define BAT_VMIN     1.9f
 
-#define IR_LIMITE 1500
-// aq temos o controle da frequencia e controle dos bits que iremos trabalhar
-// n sabia quanto colocar o gemini falou que 20khz é uma frequencia boa e que 8 bits é uma quantidade boa para trabalhar tambem
-// mas eu acho que talvez a gente vá diminuir a quantidade de bits n sei ainda 
-#define PWM_FREQ  20000  
-#define PWM_BITS  8       
+// ── PWM dos motores ───────────────────────────────────────────────────────
+#define PWM_FREQ      20000
+#define PWM_BITS      8
 #define PWM_CANAL_ESQ 0
 #define PWM_CANAL_DIR 1
 
-// aq vamos ter alguns parametros fisicos do robo tem que ver certinho quanto cada coisa vai valer quando o robô tiver montado mas a princípio peguei os valores dos cads de cada coisa 
-// os valores de diametro largura e celula sao todos em milímetros
-#define PULSOSPORVOLTA  360 
-#define DIAMETRO_RODA_MM  44.0f 
-#define LARGURA_ROBO_MM  75.0f   
-#define CELULA_MM  180.0f
+// ── Parâmetros físicos do robô e do labirinto (em mm) ─────────────────────
+#define DIAMETRO_RODA_MM  44.0f
+#define LARGURA_ROBO_MM   106.0f   // largura com rodas (10,6 cm)
+#define COMP_ROBO_MM      120.0f   // comprimento frente-fundo (12 cm)
+#define CELULA_MM         180.0f   // célula do labirinto (18 cm)
+#define PULSOSPORVOLTA    360
 
-// Distância em pulsos equivalente a 1 célula
-#define PULSOS_CELULA  ((int)(PULSOSPORVOLTA * (CELULA_MM / (3.14159f * DIAMETRO_RODA_MM))))
-
-// pulsos para girar 90°  (arco = (π × LARGURA_ROBÔ) / 4  /  circunferência_roda)
+// ── Odometria ─────────────────────────────────────────────────────────────
+#define PULSOS_CELULA  ((int)(PULSOSPORVOLTA * (CELULA_MM  / (3.14159f * DIAMETRO_RODA_MM))))
 #define PULSOS_GIRO_90 ((int)(PULSOSPORVOLTA * (LARGURA_ROBO_MM / (4.0f * DIAMETRO_RODA_MM))))
 
-// esse aqui vamos ter que definir na bancada quando testarmos mas resumidamente 
-// o PID KP serve para quando uma roda estiver mais atrasada e ele vai dar um impulso nela pra compesar 
-// o PID KI serve para corrigir erros bem pequenos caso um motorfique mais fraco que o outro ou coisas do tipo (talvez nem precisemos usar)
-// o PID KD é o contrário do KP ele vai dar uma desacelerada pois caso o KP entre muito forte ele dá uma freiada para a correção não passar do ponto ideal
+// ── PID de tração (calibrar na bancada) ───────────────────────────────────
 #define PID_KP  1.0f
 #define PID_KI  0.1f
 #define PID_KD  0.0f
 
-// Velocidade base equivalente aos 8 bits escolhidos anteriormente (PWM 0–255)
-#define VEL_BASE      160
-#define VEL_GIRO      130
-#define VEL_MAX       220
+// ── Velocidades (PWM 0-255, resolução 8 bits) ─────────────────────────────
+#define VEL_BASE  160
+#define VEL_GIRO  130
+#define VEL_MAX   220
 
-// leitura da bateria através do divisor de tensão
-#define BATERIA 34
+// ── Parâmetros dos sensores IR ────────────────────────────────────────────
+// Offset sistemático medido na bancada: sensores leem ~1 cm a menos que a régua
+#define SENSOR_OFFSET_CM       1.0f
 
-// resistência em ohms dos resistores
-#define BAT_R1 10000.0f
-#define BAT_R2 4700.0f
+// Geometria de alinhamento lateral:
+//   gap lateral = (CELULA_MM - LARGURA_ROBO_MM) / 2 = 37 mm = 3,7 cm
+//   sensor recuado 9 mm da borda lateral do robô
+//   distância alvo = 3,7 + 0,9 = 4,6 cm
+//
+//   limite sem parede: robô encostado na parede oposta
+//   gap oposto = 7,4 cm + recuo 0,9 cm = 8,3 cm
+#define SENSOR_RECUO_MM        9.0f
+#define DIST_LATERAL_ALVO_CM   4.6f   // sensor → parede quando centralizado
+#define DIST_LATERAL_MARGEM_CM 0.5f   // tolerância antes de acionar correção (±0,5 cm)
+#define DIST_SEM_PAREDE_CM     8.3f   // acima disso: passagem livre
 
-// tensão de referência da esp e resolução da esp
-#define BAT_VREF 3.3f
-#define BAT_ADC_BITS 4095.0f
-
-// limites do divisor de tensão para a regra de 3
-#define BAT_VMAX 2.8f
-#define BAT_VMIN 1.9f
+// Detecção frontal:
+//   sensor na frente do robô, centro do robô a 6 cm da frente
+//   quando sensor lê 3 cm → centro do robô está no centro da célula (9 cm da parede)
+//   raio de giro: √(6² + 5,3²) ≈ 8,0 cm < 9 cm → consegue girar no próprio eixo
+#define DIST_FRONTAL_LIMITE_CM 3.0f   // abaixo disso: parede detectada, robô no centro da célula
