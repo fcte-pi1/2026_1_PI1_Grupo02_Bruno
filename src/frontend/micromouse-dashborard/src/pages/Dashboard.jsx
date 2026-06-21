@@ -17,18 +17,7 @@ export default function Dashboard() {
     const wsRef = useRef(null)
     const [conectado, setConectado] = useState(false)
 
-
-    useEffect(() => {
-        if (!rodando) return
-
-        const intervalo = setInterval(() => {
-            setTempo(t => t + 10)
-        }, 10)
-
-        return () => clearInterval(intervalo)
-    }, [rodando])
-
-    const conectar = () => {
+const conectar = () => {
         wsRef.current = new WebSocket('ws://127.0.0.1:8000/ws/corrida/live/')
 
         wsRef.current.onopen = () => {
@@ -70,6 +59,7 @@ export default function Dashboard() {
         wsRef.current.onclose = () => {
             setConectado(false)
             console.log('WebSocket fechado')
+            setTimeout(conectar,2000)
         }
 
         wsRef.current.onerror = () => {
@@ -78,70 +68,26 @@ export default function Dashboard() {
     }
 
 
+    useEffect(() => {
+        if (!rodando) return
 
-    // useEffect(() => {
-    //     let ws = null
-    //     let tentativas = 0
+        const intervalo = setInterval(() => {
+            setTempo(t => t + 10)
+        }, 10)
 
-    //     const conectar = () => {
-    //         ws = new WebSocket('ws://127.0.0.1:8000/ws/corrida/live/')
+        return () => clearInterval(intervalo)
+    }, [rodando])
 
-    //         ws.onopen = () => {
-    //             console.log('Conectado ao WebSocket!')
-    //             tentativas = 0
-    //         }
-
-    //         ws.onmessage = (evento) => {
-    //             const mensagem = JSON.parse(evento.data)
-    //             const { tipo, payload, timestamp_ms } = mensagem
-
-    //             if (tipo === "run_started") {
-    //                 setRodando(true)
-    //                 setBateria(payload.bateria)
-    //                 setTempo(0)
-
-    //             }
-
-    //             if (tipo === "cell_discovered") {
-    //                 // nova célula descoberta
-    //                 setTempo(timestamp_ms)
-    //                 setPosicao({ x: payload.x, y: payload.y })
-    //                 setDirecao(payload.direcao)
-    //                 setVelocidade(payload.velocidade)
-    //                 setBateria(payload.bateria)
-    //                 setGrid(prev => ({ ...prev, [`${payload.linha},${payload.coluna}`]: payload }))
-    //                 setRastro(prev => [...prev, { x: payload.x, y: payload.y, direcao: payload.direcao }])
-    //                 setCelulasVisitadas(prev => prev + 1)
-    //             }
-
-    //             if (tipo === 'run_finished') {
-    //                 // corrida finalizada
-    //                 setRodando(false)
-    //                 setVelocidade(payload.v_med)
-    //                 setBateria(payload.bateria)
-    //             }
-
-    //         }
-    //         ws.onclose = () => {
-    //             console.log('WebSocket fechado, tentando reconectar...')
-    //             tentativas++
-    //             setTimeout(conectar, 3000) // tenta de novo após 2 segundos
-    //         }
-
-    //         ws.onerror = () => {
-    //             ws.close()
-    //         }
-    //     }
+    useEffect(() => {
+        conectar()
+        return ()=>{
+            if(wsRef.current){
+                wsRef.current.close()
+            }
+        }
+    }, []);
 
 
-
-
-
-
-    //     return () => {
-    //         if (ws) ws.close()
-    //     }
-    // }, [])
 
 
 
@@ -177,9 +123,9 @@ export default function Dashboard() {
                         }} />
                 </div>
             </main>
-            <button onClick={conectar}>
-                {conectado ? '🟢 Conectado' : '⚪ Conectar'}
-            </button>
+            {/*<button onClick={conectar}>*/}
+            {/*    {conectado ? '🟢 Conectado' : '⚪ Conectar'}*/}
+            {/*</button>*/}
 
             <footer style={{ textAlign: 'center', fontSize: '12px', color: '#6b7280', padding: '8px' }}>
                 MicroMouse
