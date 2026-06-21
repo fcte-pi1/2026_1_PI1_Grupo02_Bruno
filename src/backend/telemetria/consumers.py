@@ -1,3 +1,4 @@
+import asyncio
 import json
 
 from channels.db import database_sync_to_async
@@ -214,17 +215,23 @@ class CorridaConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         self.group_name = 'corrida_live'
 
-        corrida = await self._buscar_corrida_ativa()
-        if corrida is None:
-            await self.close(code=4000)
-            return
+        await self.channel_layer.group_add(
+            self.group_name,
+            self.channel_name
+        )
 
-        await self.channel_layer.group_add(self.group_name, self.channel_name)
         await self.accept()
 
+        self.ping_task = asyncio.create_task(self.enviar_ping())
+
     async def disconnect(self, close_code):
-        if hasattr(self, "group_name"):
-            await self.channel_layer.group_discard(self.group_name, self.channel_name)
+        if hasattr(self, "ping_task"):
+            self.ping_task.cancel()
+
+        await self.channel_layer.group_discard(
+            self.group_name,
+            self.channel_name
+        )
 
     async def telemetria_update(self, event):
         await self.send(text_data=json.dumps(event['data']))
@@ -240,3 +247,13 @@ class CorridaConsumer(AsyncWebsocketConsumer):
             .order_by('-iniciado_em')
             .first()
         )
+
+    async def enviar_ping(self):
+        while True:
+            try:
+                await self.send(text_data=json.dumps({
+                    "tipo": "ping"
+                }))
+                await asyncio.sleep(30)
+            except:
+                break
