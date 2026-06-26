@@ -20,6 +20,12 @@
 #define IR_ESQUERDA  32
 #define IR_DIREITA   35
 
+// ── Wi-Fi / OTA (ElegantOTA) ───────────────────────────────────────────────
+#ifndef WIFI_SSID
+  #define WIFI_SSID     "NOME_DA_REDE"
+  #define WIFI_PASSWORD "SENHA_DA_REDE"
+#endif
+
 // ── Bateria (divisor de tensão) ───────────────────────────────────────────
 #define BATERIA      34
 #define BAT_R1       10000.0f

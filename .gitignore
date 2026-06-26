@@ -363,3 +363,5 @@ TSWLatexianTemp*
 
 # xwatermark package
 *.xwm
+
+src/firmware/credentials.h

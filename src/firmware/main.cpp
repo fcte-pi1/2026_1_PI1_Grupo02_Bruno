@@ -7,6 +7,7 @@
 #include "motors.h"
 #include "sensors.h"
 #include "battery.h"
+#include "ota.h"
 
 // seguindo a mesma lógica do código do simulador mms mas agora com funções declaradas e não apenas api do simulador
 constexpr int TAM = 16;
@@ -30,7 +31,6 @@ public:
         while (!centro(pos_x, pos_y)) {
             detectar_paredes();
             calcular_distancias();
-            debug_tela();
             melhor_celula();
             if (millis() - ultima_checada >= INTERVALO_BATERIA) {
                 int bat = battery_porcentagem();
@@ -40,6 +40,7 @@ public:
                 
                 ultima_checada = millis(); // Reseta o cronômetro
             }
+            ota_loop(); // mantém o servidor OTA respondendo mesmo durante a corrida
         }
         // chegou ao centro para os motores
         motors_parar();
@@ -177,10 +178,12 @@ void setup() {
     sensors_init();
     battery_init();
     motors_init();
+    ota_init();
     delay(2000);   
     Micromouse mouse;
     mouse.run();
 }
 
 void loop() {
+    ota_loop();
 }
