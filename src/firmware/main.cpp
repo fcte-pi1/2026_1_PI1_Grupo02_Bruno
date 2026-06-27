@@ -8,6 +8,7 @@
 #include "sensors.h"
 #include "battery.h"
 #include "ota.h"
+#include "dip.h"
 
 // seguindo a mesma lógica do código do simulador mms mas agora com funções declaradas e não apenas api do simulador
 constexpr int TAM = 16;
@@ -176,6 +177,7 @@ private:
 void setup() {
     Serial.begin(115200);
     sensors_init();
+    dip_init();
     battery_init();
     motors_init();
     ota_init();
