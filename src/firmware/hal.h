@@ -32,8 +32,8 @@
 #define BAT_R2       4700.0f
 #define BAT_VREF     3.3f
 #define BAT_ADC_BITS 4095.0f
-#define BAT_VMAX     2.8f
-#define BAT_VMIN     1.9f
+#define BAT_VMAX     8.4f
+#define BAT_VMIN     6.6f
 
 // ── PWM dos motores ───────────────────────────────────────────────────────
 #define PWM_FREQ      20000
