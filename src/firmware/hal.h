@@ -28,6 +28,8 @@
 #define BAT_ADC_BITS 4095.0f
 #define BAT_VMAX     8.4f
 #define BAT_VMIN     6.6f
+#define BAT_CAL_FATOR  (7.29f / 6.60f)
+
 
 // ── PWM dos motores ───────────────────────────────────────────────────────
 #define PWM_FREQ      20000
