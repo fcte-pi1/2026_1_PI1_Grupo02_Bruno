@@ -20,12 +20,6 @@
 #define IR_ESQUERDA  32
 #define IR_DIREITA   35
 
-// ── Wi-Fi / OTA (ElegantOTA) ───────────────────────────────────────────────
-#ifndef WIFI_SSID
-  #define WIFI_SSID     "NOME_DA_REDE"
-  #define WIFI_PASSWORD "SENHA_DA_REDE"
-#endif
-
 // ── Bateria (divisor de tensão) ───────────────────────────────────────────
 #define BATERIA      34
 #define BAT_R1       10000.0f
@@ -83,3 +77,8 @@
 //   quando sensor lê 3 cm → centro do robô está no centro da célula (9 cm da parede)
 //   raio de giro: √(6² + 5,3²) ≈ 8,0 cm < 9 cm → consegue girar no próprio eixo
 #define DIST_FRONTAL_LIMITE_CM 3.0f   // abaixo disso: parede detectada, robô no centro da célula
+
+// ── Chave DIP ───────────────────────────────────────────────────────────
+#define START 27
+#define MAPA_4X4 14
+#define MAPA_8X8 13 
