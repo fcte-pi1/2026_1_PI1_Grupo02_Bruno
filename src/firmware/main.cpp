@@ -173,7 +173,8 @@ private:
     }
 };
 
-// setup loop
+bool teste_executado = false; 
+
 void setup() {
     Serial.begin(115200);
     sensors_init();
@@ -181,11 +182,50 @@ void setup() {
     battery_init();
     motors_init();
     ota_init();
-    delay(2000);   
-    Micromouse mouse;
-    mouse.run();
 }
 
 void loop() {
-    ota_loop();
+    ota_loop(); 
+
+    if (start() && !teste_executado) {
+        
+        int vel_teste = 150; // Velocidade segura 
+        
+        // 1. TESTE ESQUERDA - FRENTE
+        digitalWrite(MOT_ESQ_INA1, HIGH);
+        digitalWrite(MOT_ESQ_INA2, LOW);
+        ledcWrite(MOT_ESQ_PWMA, vel_teste);
+        delay(2000);
+        ledcWrite(MOT_ESQ_PWMA, 0); // Desliga
+        delay(2000); // Pausa para você observar
+
+        // 2. TESTE ESQUERDA - TRÁS
+        digitalWrite(MOT_ESQ_INA1, LOW);
+        digitalWrite(MOT_ESQ_INA2, HIGH);
+        ledcWrite(MOT_ESQ_PWMA, vel_teste);
+        delay(2000);
+        ledcWrite(MOT_ESQ_PWMA, 0);
+        delay(2000);
+
+        // 3. TESTE DIREITA - FRENTE
+        digitalWrite(MOT_DIR_INB1, HIGH);
+        digitalWrite(MOT_DIR_INB2, LOW);
+        ledcWrite(MOT_DIR_PWMB, vel_teste);
+        delay(2000);
+        ledcWrite(MOT_DIR_PWMB, 0);
+        delay(2000);
+
+        // 4. TESTE DIREITA - TRÁS
+        digitalWrite(MOT_DIR_INB1, LOW);
+        digitalWrite(MOT_DIR_INB2, HIGH);
+        ledcWrite(MOT_DIR_PWMB, vel_teste);
+        delay(2000);
+        ledcWrite(MOT_DIR_PWMB, 0);
+
+        teste_executado = true; // Trava para não repetir
+    }
+
+    if (!start()) {
+        teste_executado = false; // Rearma quando você desligar a chave
+    }
 }
