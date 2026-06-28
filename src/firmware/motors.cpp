@@ -1,4 +1,5 @@
 #include "motors.h"
+#include "sensors.h"
 #include "hal.h"
 #include <Arduino.h>
 
@@ -85,7 +86,7 @@ void motors_parar() {
 
 // essa é a função principal que faz o robô andar até o alvo e corrige a trajetória com o pid
 // recebe quantos pulsos cada roda tem que dar (positivo frente, negativo ré)
-static void mover(long alvo_esq, long alvo_dir) {
+static void mover(long alvo_esq, long alvo_dir, bool usar_sensor = false) {
     // desliga as interrupções rapidinho só pra zerar os contadores sem dar problema
     noInterrupts();
     enc_esq = 0;
@@ -112,7 +113,9 @@ static void mover(long alvo_esq, long alvo_dir) {
         // checa se já chegou
         bool esq_ok = (lido_esq >= abs_esq);
         bool dir_ok = (lido_dir >= abs_dir);
-        if (esq_ok && dir_ok) break;
+
+        bool parede_proxima = usar_sensor && (sensor_cm(IR_FRENTE) < DIST_FRONTAL_LIMITE_CM); // para se o sensor lê menos que DIST_FRONTAL_LIMITE_CM (3 cm),
+        if ((esq_ok && dir_ok) || parede_proxima) break;
 
         // aqui a gente calcula o erro do pid
         // ve qual roda tá mais adiantada comparando a porcentagem do que elas já andaram
@@ -144,7 +147,7 @@ static void mover(long alvo_esq, long alvo_dir) {
 
 // manda o robo andar a distancia de uma celula inteira pra frente
 void motors_avancar_celula() {
-    mover(PULSOS_CELULA, PULSOS_CELULA);
+    mover(PULSOS_CELULA, PULSOS_CELULA, true);
 }
 
 // gira 90 graus no proprio eixo pra direita (uma roda vai pra frente e a outra pra tras)
