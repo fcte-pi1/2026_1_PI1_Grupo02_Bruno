@@ -14,10 +14,9 @@ const legenda = [
     {cor: '#facc15', label: 'Destino'},
 ]
 
-export default function MazeCanvas({fase, grid, setGrid, setRastro, mouseX, mouseY, rastro}) {
+export default function MazeCanvas({tamanhoGrid, fase, grid, setGrid, setRastro, mouseX, mouseY, rastro}) {
     const fase_atual = fases[fase]
     const canvasRef = useRef(null)
-
 
 
     useEffect(() => {
@@ -25,13 +24,12 @@ export default function MazeCanvas({fase, grid, setGrid, setRastro, mouseX, mous
             const canvas = canvasRef.current
             if (!canvas) return
             const ctx = canvas.getContext('2d')
-            const tamanhoiGrid = 4 // 4x4
-            const tamanho = Math.min(canvas.width, canvas.height) / tamanhoiGrid// tamanho de cada celula em pixeis
+            const tamanho = Math.min(canvas.width, canvas.height) / tamanhoGrid// tamanho de cada celula em pixeis
 
             ctx.clearRect(0, 0, canvas.width, canvas.height)// limpa a celula
             Object.values(grid).forEach((celula) => {
                 const x = celula.coluna * tamanho
-                const y = celula.linha * tamanho
+                const y = (tamanhoGrid - 1 - celula.linha) * tamanho
                 // 'aloca cada celula no grid'
 
                 // fundo da celula
@@ -72,7 +70,7 @@ export default function MazeCanvas({fase, grid, setGrid, setRastro, mouseX, mous
             }) // roda toda vez que o grid mudar
 
             const mX = mouseX * tamanho + tamanho / 2
-            const mY = mouseY * tamanho + tamanho / 2
+            const mY = (tamanhoGrid - 1 - mouseY) * tamanho + tamanho / 2
 
             // console.log('mouseX:', mouseX)
             // console.log('mouseY:', mouseY)
@@ -83,10 +81,13 @@ export default function MazeCanvas({fase, grid, setGrid, setRastro, mouseX, mous
             ctx.arc(mX, mY, tamanho / 3, 0, Math.PI * 2)// desenho o criculo do ratinho
             ctx.fillStyle = '#ef4444'// vermelho
             ctx.fill()
+            console.log(rastro)
 
             rastro.forEach(({x, y, direcao}) => {
+                if (!direcao) return
+
                 const xR = x * tamanho + tamanho / 2
-                const yR = y * tamanho + tamanho / 2
+                const yR = (tamanhoGrid - 1 - y) * tamanho + tamanho / 2
 
                 const angulos = {
                     'N': -Math.PI / 2,
