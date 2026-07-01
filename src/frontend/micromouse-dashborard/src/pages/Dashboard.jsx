@@ -13,69 +13,110 @@ export default function Dashboard() {
     const [direcao, setDirecao] = useState('Norte')
     const [posicao, setPosicao] = useState({x: 0, y: 0})
     const [celulasVisitadas, setCelulasVisitadas] = useState(0)
-    const inicioRef = useRef(null)
     const [rastro, setRastro] = useState([])
-    const [passoAtual, setPassoAtual] = useState(0)
+    const wsRef = useRef(null)
+    const [conectado, setConectado] = useState(false)
+    const [dimensaoLabirinto, setDimensaoLabirinto] = useState(4)
 
+    const calcularDirecaoMovimento = (origem, destino) => {
+        const deltaX = destino.x - origem.x
+        const deltaY = destino.y - origem.y
 
-    useEffect(() => {
-        let ws = null
-        let tentativas = 0
+        if (deltaX > 0) return 'Leste'
+        if (deltaX < 0) return 'Oeste'
+        if (deltaY > 0) return 'Norte'
+        if (deltaY < 0) return 'Sul'
 
-        const conectar = () => {
-            ws = new WebSocket('ws://127.0.0.1:8000/ws/corrida/live/')
+        return origem.direcao
+    }
 
-            ws.onopen = () => {
-                console.log('Conectado ao WebSocket!')
-                tentativas = 0
+    const conectar = () => {
+        wsRef.current = new WebSocket('ws://127.0.0.1:8000/ws/corrida/live/')
+
+        wsRef.current.onopen = () => {
+            setConectado(true)
+            console.log('Conectado!')
+        }
+
+        wsRef.current.onmessage = (evento) => {
+            const mensagem = JSON.parse(evento.data)
+            const {tipo, payload, timestamp_ms} = mensagem
+
+            if (tipo === "run_started") {
+                setRodando(true)
+                setBateria(payload.bateria)
+                setTempo(0)
+                setDimensaoLabirinto(payload.dimensao)
+
             }
 
-            ws.onmessage = (evento) => {
-                console.log('mensagem recebida:', JSON.parse(evento.data))
-                const data = JSON.parse(evento.data)
+            if (tipo === "cell_discovered") {
+                // nova célula descoberta
+                setTempo(timestamp_ms)
+                setPosicao({x: payload.x, y: payload.y})
+                setDirecao(payload.direcao)
+                setVelocidade(payload.velocidade)
+                setBateria(payload.bateria)
 
-                setPosicao({x: data.x, y: data.y})
-                setDirecao(data.direcao)
-                setVelocidade(data.velocidade)
-                setBateria(data.bateria)
-                setCelulasVisitadas(data.posicao_ordem)
-                setGrid(prev => ({...prev, [`${data.celula.linha},${data.celula.coluna}`]: data.celula}))
-                setRastro(prev => [...prev, {x: data.x, y: data.y, direcao: data.direcao}])
+                setGrid(prev => ({...prev, [`${payload.linha},${payload.coluna}`]: payload}))
+                setRastro(prev => {
+                    const novoRastro = [...prev]
+
+                    const ultima = novoRastro[novoRastro.length - 1]
+                    if (!ultima || ultima.x !== payload.x || ultima.y !== payload.y) {
+                        if (ultima) {
+                            ultima.direcao = calcularDirecaoMovimento(ultima, payload)
+                        }
+
+                        novoRastro.push({x: payload.x, y: payload.y, direcao: null})
+                    }
+
+                    return novoRastro
+                })
+                setCelulasVisitadas(prev => prev + 1)
             }
 
-            ws.onclose = () => {
-                console.log('WebSocket fechado, tentando reconectar...')
-                tentativas++
-                setTimeout(conectar, 2000) // tenta de novo após 2 segundos
-            }
-
-            ws.onerror = () => {
-                ws.close()
+            if (tipo === 'run_finished') {
+                // corrida finalizada
+                setRodando(false)
+                setVelocidade(payload.v_med)
+                setBateria(payload.bateria)
             }
         }
 
-        conectar()
-
-        return () => {
-            if (ws) ws.close()
+        wsRef.current.onclose = () => {
+            setConectado(false)
+            console.log('WebSocket fechado')
+            setTimeout(conectar, 2000)
         }
-    }, [])
 
-    // tempo cronometro
+        wsRef.current.onerror = () => {
+            wsRef.current.close()
+        }
+    }
+
+
     useEffect(() => {
         if (!rodando) return
 
-        // zera o tempo e marca denovo o inicio do cronometro
-
-        inicioRef.current = Date.now()
         const intervalo = setInterval(() => {
-            setTempo(tempo => tempo + 10) // põe 10 milisegundo no tempo
-        }, 10) // a cada 10 milisegundo
+            setTempo(t => t + 10)
+        }, 10)
 
-        return () => clearInterval(intervalo)// limpa o intervalo quando o componente for desmontado
-
+        return () => clearInterval(intervalo)
     }, [rodando])
 
+    useEffect(() => {
+        conectar()
+        return () => {
+            if (wsRef.current) {
+                wsRef.current.close()
+            }
+        }
+    }, []);
+
+
+    // tempo cronometro
 
     return (
         <div style={{
@@ -87,10 +128,19 @@ export default function Dashboard() {
         }}>
             <Navbar faseAtual={faseAtual} onFaseChange={setFaseAtual}/>
 
-            <main style={{display: 'flex', flex: 1, gap: '1rem', padding: '1rem'}}>
-                <div style={{flex: 1, backgroundColor: '#1a1d2e', borderRadius: '12px', padding: '1rem'}}>
+            <main style={{display: 'flex', flex: 1, minHeight: 0, gap: '0.75rem', padding: '0.75rem'}}>
+                <div style={{
+                    flex: 1,
+                    minHeight: 0,
+                    backgroundColor: '#1a1d2e',
+                    borderRadius: '12px',
+                    padding: '0.75rem',
+                    display: 'flex',
+                    justifyContent: 'center'
+                }}>
                     <MazeCanvas fase={faseAtual} grid={grid} setGrid={setGrid} mouseX={posicao.x} mouseY={posicao.y}
-                                setRastro={setRastro} rastro={rastro}/>
+                                setRastro={setRastro} rastro={rastro}
+                                tamanhoGrid={dimensaoLabirinto}/>
                     {/* passo a variavel faseAtual pra dentro de Maze canvas */}
                 </div>
                 <div style={{width: '288px', backgroundColor: '#1a1d2e', borderRadius: '12px', padding: '1rem'}}>
@@ -107,18 +157,10 @@ export default function Dashboard() {
                         }}/>
                 </div>
             </main>
-            <button onClick={() => {
-                if (passoAtual < chaves.length) {
-                    const chave = chaves[passoAtual] // quando o WB estiver pronto substituir pela a adaptação do WB
-                    const celula = celulasMock[chave]
-                    setGrid(prev => ({...prev, [chave]: celulasMock[chave]}))
-                    setPosicao({x: celula.coluna, y: celula.linha})
-                    setRastro(r => [...r, {x: posicao.x, y: posicao.y, direcao: direcao}])
-                    setPassoAtual(p => p + 1)
-                }
-            }}>
-                Mover ratinho →
-            </button>
+            {/*<button onClick={conectar}>*/}
+            {/*    {conectado ? '🟢 Conectado' : '⚪ Conectar'}*/}
+            {/*</button>*/}
+
             <footer style={{textAlign: 'center', fontSize: '12px', color: '#6b7280', padding: '8px'}}>
                 MicroMouse
             </footer>
