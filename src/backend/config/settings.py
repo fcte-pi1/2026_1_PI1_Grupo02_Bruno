@@ -25,7 +25,17 @@ SECRET_KEY = 'django-insecure-aq*66p%5&!xy46!zum9a9^gd811=dcv#b&_=9j@gh1qm!ql7eo
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    # Rede AP criada pela ESP32 ("rataturing"):
+    #   192.168.4.1 = IP da própria ESP32 (gateway da rede)
+    #   192.168.4.2 = IP padrão do PC que se conecta à rede da ESP32
+    '192.168.4.1',
+    '192.168.4.2',
+    # Para desenvolvimento: libera qualquer host local
+    '0.0.0.0',
+]
 
 
 # Application definition

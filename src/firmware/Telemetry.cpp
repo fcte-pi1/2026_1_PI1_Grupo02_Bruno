@@ -9,8 +9,21 @@ int Telemetry::count = 0;
 String Telemetry::eventBuffer[50];
 WebSocketsClient Telemetry::webSocket;
 
-const char* host = "192.168.1.100"; // MUDAR PARA O IP DO SEU BACKEND
-const int port = 8000;              // Porta padrão do Django
+// ─── CONFIGURAÇÃO DE REDE ─────────────────────────────────────────────────
+// Defina abaixo o IP do computador onde o backend Django está rodando.
+//
+// Modo AP (padrão): a ESP32 cria a rede "rataturing" (credentials.h).
+//   → Conecte o PC nessa rede.
+//   → O IP do PC nessa rede costuma ser 192.168.4.2
+//   → Defina: host = "192.168.4.2"
+//
+// Modo STA (alternativo): modifique ota.cpp para conectar em um roteador.
+//   → Use o IP local do PC na rede do roteador (ex: "192.168.1.15")
+//   → Descubra com: hostname -I  (Linux) ou ipconfig (Windows)
+//
+// TODO: substitua o valor abaixo antes de fazer o upload para a ESP32
+const char* host = "0.0.0.0"; // <-- CONFIGURE O IP DO BACKEND AQUI
+const int port = 8000;        // Porta padrão do Django (não alterar)
 
 static uint32_t next_event_id = 1;
 
