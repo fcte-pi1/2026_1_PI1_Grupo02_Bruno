@@ -36,7 +36,7 @@ static void set_motor_esq(int pwm) {
         pwm = -pwm;
     }
     // manda a velocidade pro motor
-    ledcWrite(PWM_CANAL_ESQ, constrain(pwm, 0, 255));
+    ledcWrite(MOT_ESQ_PWMA, constrain(pwm, 0, 255));
 }
 
 // mesma coisa que o da esquerda só que pra roda direita
@@ -49,7 +49,7 @@ static void set_motor_dir(int pwm) {
         digitalWrite(MOT_DIR_INB2, HIGH);
         pwm = -pwm;
     }
-    ledcWrite(PWM_CANAL_DIR, constrain(pwm, 0, 255));
+    ledcWrite(MOT_DIR_PWMB, constrain(pwm, 0, 255));
 }
 
 // configura todos os pinos de motor e encoder pra começarem a funcionar
@@ -57,15 +57,11 @@ void motors_init() {
     pinMode(MOT_ESQ_INA1, OUTPUT);
     pinMode(MOT_ESQ_INA2, OUTPUT);
     pinMode(MOT_DIR_INB1, OUTPUT);
-    pinMode(MOT_DIR_INB2, OUTPUT);
-    pinMode(MOT_STBY,    OUTPUT);
-    digitalWrite(MOT_STBY, HIGH);   
+    pinMode(MOT_DIR_INB2, OUTPUT);   
 
     // configura o pwm do esp32 pra gente poder controlar a velocidade
-    ledcSetup(PWM_CANAL_ESQ, PWM_FREQ, PWM_BITS);
-    ledcSetup(PWM_CANAL_DIR, PWM_FREQ, PWM_BITS);
-    ledcAttachPin(MOT_ESQ_PWMA, PWM_CANAL_ESQ);
-    ledcAttachPin(MOT_DIR_PWMB, PWM_CANAL_DIR);
+    ledcAttach(MOT_ESQ_PWMA, PWM_FREQ, PWM_BITS);
+    ledcAttach(MOT_DIR_PWMB, PWM_FREQ, PWM_BITS);
 
     // pinos dos encoders entram como input pra gente ler o sinal deles
     pinMode(ENC_ESQ_A, INPUT_PULLUP);
@@ -131,8 +127,8 @@ static void mover(long alvo_esq, long alvo_dir, bool usar_sensor = false) {
         float correcao = PID_KP * erro + PID_KI * integral + PID_KD * derivada;
 
         // se a roda já chegou no alvo ela para, senão a gente soma ou subtrai a correção da velocidade base
-        int pwm_esq = esq_ok ? 0 : (int)(VEL_BASE - correcao * 50);
-        int pwm_dir = dir_ok ? 0 : (int)(VEL_BASE + correcao * 50);
+        int _esq = esq_ok ? 0 : (int)(VEL_BASE - correcao * 50);
+        int _dir = dir_ok ? 0 : (int)(VEL_BASE + correcao * 50);
 
         // manda a velocidade pros motores com um limite pra nao passar do maximo
         set_motor_esq(constrain(pwm_esq, 0, VEL_MAX) * sinal_esq);
