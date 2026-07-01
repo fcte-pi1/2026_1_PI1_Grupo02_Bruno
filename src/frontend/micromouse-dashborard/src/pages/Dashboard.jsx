@@ -18,6 +18,18 @@ export default function Dashboard() {
     const [conectado, setConectado] = useState(false)
     const [dimensaoLabirinto, setDimensaoLabirinto] = useState(4)
 
+    const calcularDirecaoMovimento = (origem, destino) => {
+        const deltaX = destino.x - origem.x
+        const deltaY = destino.y - origem.y
+
+        if (deltaX > 0) return 'Leste'
+        if (deltaX < 0) return 'Oeste'
+        if (deltaY > 0) return 'Norte'
+        if (deltaY < 0) return 'Sul'
+
+        return origem.direcao
+    }
+
     const conectar = () => {
         wsRef.current = new WebSocket('ws://127.0.0.1:8000/ws/corrida/live/')
 
@@ -48,16 +60,14 @@ export default function Dashboard() {
 
                 setGrid(prev => ({...prev, [`${payload.linha},${payload.coluna}`]: payload}))
                 setRastro(prev => {
-                    // atualiza a direção da última posição (se existir)
-                    const novoRastro = prev.length > 0
-                        ? prev.map((item, i) =>
-                            i === prev.length - 1 ? {...item, direcao: payload.direcao} : item
-                        )
-                        : []
+                    const novoRastro = [...prev]
 
-                    // adiciona a posição atual SEM duplicar — verifica se já é a última
                     const ultima = novoRastro[novoRastro.length - 1]
                     if (!ultima || ultima.x !== payload.x || ultima.y !== payload.y) {
+                        if (ultima) {
+                            ultima.direcao = calcularDirecaoMovimento(ultima, payload)
+                        }
+
                         novoRastro.push({x: payload.x, y: payload.y, direcao: null})
                     }
 
@@ -118,8 +128,16 @@ export default function Dashboard() {
         }}>
             <Navbar faseAtual={faseAtual} onFaseChange={setFaseAtual}/>
 
-            <main style={{display: 'flex', flex: 1, gap: '1rem', padding: '1rem'}}>
-                <div style={{flex: 1, backgroundColor: '#1a1d2e', borderRadius: '12px', padding: '1rem'}}>
+            <main style={{display: 'flex', flex: 1, minHeight: 0, gap: '0.75rem', padding: '0.75rem'}}>
+                <div style={{
+                    flex: 1,
+                    minHeight: 0,
+                    backgroundColor: '#1a1d2e',
+                    borderRadius: '12px',
+                    padding: '0.75rem',
+                    display: 'flex',
+                    justifyContent: 'center'
+                }}>
                     <MazeCanvas fase={faseAtual} grid={grid} setGrid={setGrid} mouseX={posicao.x} mouseY={posicao.y}
                                 setRastro={setRastro} rastro={rastro}
                                 tamanhoGrid={dimensaoLabirinto}/>
