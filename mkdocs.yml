@@ -1,38 +1,86 @@
 site_name: RataTuring
+site_description: Documentação do projeto RataTuring
+site_author: PI1 - Grupo 02
+
+repo_url: https://github.com/fcte-pi1/2026_1_PI1_Grupo02_Bruno.git
+edit_uri: edit/main/docs/
 
 theme:
   name: material
   language: pt-BR
   features:
-      - navigation.tabs
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - toc.integrate
+    - navigation.indexes
+    - content.code.copy
+    - content.tabs.link
+    - navigation.top
 
   palette:
+    - scheme: default
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/weather-night
+        name: Tema escuro
+
     - scheme: slate
-      primary: lime
-      accent: pink
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/weather-sunny
+        name: Tema claro
+
+  font:
+    text: Inter
+    code: JetBrains Mono
+
+  icon:
+    repo: fontawesome/brands/github
+    logo: material/robot
+
+  markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - tables
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.tabbed:
+      alternate_style: true
+
 extra:
   generator: false
 plugins: []
-repo_name: PI1 - Grupo 02
-repo_url: https://github.com/fcte-pi1/2026_1_PI1_Grupo02_Bruno.git
+
 nav:
   - Início: index.md
-  - Equipe: pages/equipes.md
-  - Cronograma: pages/cronograma/cronograma.md
-  - EAP do Projeto: pages/eap/eap.md
-  - Documentação:
-    - Energia: pages/energia/energia.md
-    - Estrutura: pages/estrutura/estrutura.md
-    - Hardware: pages/hardware/hardware.md
+  - EAP do Projeto:
+     - Estrutura Analítica: pages/eap/eap.md
+  - Entregas:
+    - Energia: 
+      - Requisitos de Energia: pages/energia/requisitos-energia.md
+      - Dimensionamento Energético: pages/energia/dimensionamento.md
+      - Verificação e Validação: pages/energia/ver-val.md
+    - Estrutura:
+      - Requisitos de Estrutura: pages/estrutura/requisitos-estrutura.md
+      - Chassi e Labirinto: pages/estrutura/estrutura.md
+    - Hardware:
+      - Requisitos de Hardware: pages/hardware/requisitos-hw.md
+      - Descrição de Hardware: pages/hardware/hardware.md
     - Software: 
       - Arquitetura de Software: pages/software/arquitetura_software.md
-  - Entregas:
-    - Ponto de Controle 1: 
-      - Backlog Priorizado: pages/entregas/pc1/backlog.md
-    - Ponto de Controle 2: pages/entregas/pc2.md
-    - Ponto de Controle 3: pages/entregas/pc3.md
+      - Backlog Priorizado: pages/software/backlog.md
+      - Diagrama de Atividades: pages/software/diagrama-atividades.md
+      - Roteiro de Testes: pages/software/roteiro-de-testes.md
+      - Sistema de Telemetria: pages/software/telemetria.md
+
 extra_css:
-  - stylesheets/extra.css
+  - ../../../stylesheets/extra.css
 exclude_docs: |
   relatorio/
   README.md

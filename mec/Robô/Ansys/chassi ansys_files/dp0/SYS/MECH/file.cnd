@@ -1,0 +1,60 @@
+<SOLUTION>
+<HEADER FRQ="ITERATION">
+<CNDFormatVersion>r251</CNDFormatVersion>
+ <COLUMN ID="  1">CNID, Contact Pair ID</COLUMN>
+ <COLUMN ID="  2">WBCNID, WB contact pair ID</COLUMN>
+ <COLUMN ID="  3">LS, Load Step Number</COLUMN>
+ <COLUMN ID="  4">SBST, Sub-Step Number</COLUMN>
+ <COLUMN ID="  5">CNVS, Sub-Step Convergence Index</COLUMN>
+ <COLUMN ID="  6">ITER, Iteration Number</COLUMN>
+ <COLUMN ID="  7">TIME, Time</COLUMN>
+ <COLUMN ID="  8">CNOS, Max. Chattering Level</COLUMN>
+ <COLUMN ID="  9">ELCN, Number of Contact Elements in Contact</COLUMN>
+ <COLUMN ID=" 10">ELST, Number of Contact Elements in Contact (Sticking)</COLUMN>
+ <COLUMN ID=" 11">CMP, Contact Element Associated to Max Penetration/Gap</COLUMN>
+ <COLUMN ID=" 12">TMP, Target Element Associated to Max Penetration/Gap</COLUMN>
+ <COLUMN ID=" 13">LGPE, Number of Contact Points Have Too Much Penetration</COLUMN>
+ <COLUMN ID=" 14">LGSL, Number of Contact Points Have Too Much sliding</COLUMN>
+ <COLUMN ID=" 15">CNDP, Average Contact Depth</COLUMN>
+ <COLUMN ID=" 16">PINB, Max. Resulting Pinball</COLUMN>
+ <COLUMN ID=" 17">CAREA, Contacting Area</COLUMN>
+ <COLUMN ID=" 18">PENE, Max. Penetration/Min. Gap</COLUMN>
+ <COLUMN ID=" 19">CPLE, Max. Geometric Penetration</COLUMN>
+ <COLUMN ID=" 20">CLGP, Max. Geometric Gap</COLUMN>
+ <COLUMN ID=" 21">KNMX, Max. Normal Stiffness</COLUMN>
+ <COLUMN ID=" 22">KNMN, Min. Normal Stiffness</COLUMN>
+ <COLUMN ID=" 23">PRES, Max. Contact Pressure</COLUMN>
+ <COLUMN ID=" 24">SFRI, Max. Friction Stress</COLUMN>
+ <COLUMN ID=" 25">KTMX, Max. Tangential Stiffness</COLUMN>
+ <COLUMN ID=" 26">KTMN, Min. Tangential Stiffness</COLUMN>
+ <COLUMN ID=" 27">ESLI, Max. Elastic Slip Distance</COLUMN>
+ <COLUMN ID=" 28">SLID, Max. Sliding Distance of Entire Solution</COLUMN>
+ <COLUMN ID=" 29">GSMX, Max. Sliding Distance including near field</COLUMN>
+ <COLUMN ID=" 30">GSMN, Min. Sliding Distance including near field</COLUMN>
+ <COLUMN ID=" 31">SLMX, Max. sliding distance of current substep for closed contact</COLUMN>
+ <COLUMN ID=" 32">CFNX, Total contact force due to pressure -x component</COLUMN>
+ <COLUMN ID=" 33">CFNY, Total contact force due to pressure -y component</COLUMN>
+ <COLUMN ID=" 34">CFNZ, Total contact force due to pressure -z component</COLUMN>
+ <COLUMN ID=" 35">CFSX, Total contact force due to tangential stress -x component</COLUMN>
+ <COLUMN ID=" 36">CFSY, Total contact force due to tangential stress -y component</COLUMN>
+ <COLUMN ID=" 37">CFSZ, Total contact force due to tangential stress -z component</COLUMN>
+ <COLUMN ID=" 38">NORM, Contact pair force convergence norm</COLUMN>
+ <COLUMN ID=" 39">CRIT, Contact pair force criterion</COLUMN>
+ <COLUMN ID=" 40">NDMP, Max. Contact Damping Pressure</COLUMN>
+ <COLUMN ID=" 41">TDMP, Max. Contact Damping Tangential stress</COLUMN>
+ <COLUMN ID=" 42">CTEN, Total strain energy due to contact</COLUMN>
+ <COLUMN ID=" 43">CFEN, Frictional dissipation energy</COLUMN>
+ <COLUMN ID=" 44">CDEN, Contact damping dissipation energy</COLUMN>
+ <COLUMN ID=" 45">PHTM, Physical time for scaled wear</COLUMN>
+ <COLUMN ID=" 46">WEAR, Total volume loss due to wear on contact surface</COLUMN>
+ <COLUMN ID=" 47">FPSC, Max. normal fluid penetration pressure on contact surface</COLUMN>
+ <COLUMN ID=" 48">FPST, Max. normal fluid penetration pressure on target surface</COLUMN>
+ <COLUMN ID=" 49">FPTC, Max. tangential fluid penetration pressure on contact surface</COLUMN>
+ <COLUMN ID=" 50">FPTT, Max. tangential fluid penetration pressure on target surface</COLUMN>
+ <UNITS>SI</UNITS>
+</HEADER>
+<COLDATA>
+     CNID    WBCNID        LS      SBST  CNVS      ITER           TIME      CNOS      ELCN      ELST       CMP       TMP      LGPE      LGSL           CNDP           PINB          CAREA           PENE           CPLE           CLGP           KNMX           KNMN           PRES           SFRI           KTMX           KTMN           ESLI           SLID           GSMX           GSMN           SLMX           CFNX           CFNY           CFNZ           CFSX           CFSY           CFSZ           NORM           CRIT           NDMP           TDMP           CTEN           CFEN           CDEN           PHTM           WEAR           FPSC           FPST           FPTC           FPTT
+        4      2278         1         1     C         0  1.0000000E+00         0        67        67         0         0         0         0  2.7533620E-03  6.8834051E-04  0.0000000E+00  0.0000000E+00  0.0000000E+00  0.0000000E+00  0.0000000E+00  0.0000000E+00  0.0000000E+00  0.0000000E+00  0.0000000E+00  0.0000000E+00  0.0000000E+00  0.0000000E+00  0.0000000E+00  0.0000000E+00  0.0000000E+00  0.0000000E+00  0.0000000E+00  0.0000000E+00  0.0000000E+00  0.0000000E+00  0.0000000E+00  0.0000000E+00  0.0000000E+00  0.0000000E+00  0.0000000E+00  0.0000000E+00  0.0000000E+00  0.0000000E+00  0.0000000E+00  0.0000000E+00  0.0000000E+00  0.0000000E+00  0.0000000E+00  0.0000000E+00
+</COLDATA>
+</SOLUTION>

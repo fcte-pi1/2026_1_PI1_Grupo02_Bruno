@@ -227,7 +227,8 @@ acs-*.bib
 *.slf[0-9]*
 *.slt[0-9]*
 *.stc[0-9]*
-
+.idea
+node_modules
 # minted
 _minted*
 *.data.minted
