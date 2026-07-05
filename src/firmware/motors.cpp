@@ -127,8 +127,8 @@ static void mover(long alvo_esq, long alvo_dir, bool usar_sensor = false) {
         float correcao = PID_KP * erro + PID_KI * integral + PID_KD * derivada;
 
         // se a roda já chegou no alvo ela para, senão a gente soma ou subtrai a correção da velocidade base
-        int _esq = esq_ok ? 0 : (int)(VEL_BASE - correcao * 50);
-        int _dir = dir_ok ? 0 : (int)(VEL_BASE + correcao * 50);
+        int pwm_esq = esq_ok ? 0 : (int)(VEL_BASE - correcao * 50);
+        int pwm_dir = dir_ok ? 0 : (int)(VEL_BASE + correcao * 50);
 
         // manda a velocidade pros motores com um limite pra nao passar do maximo
         set_motor_esq(constrain(pwm_esq, 0, VEL_MAX) * sinal_esq);
