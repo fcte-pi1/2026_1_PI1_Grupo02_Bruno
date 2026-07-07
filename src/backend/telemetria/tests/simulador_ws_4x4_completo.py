@@ -119,47 +119,30 @@ async def simular():
             # Origem (0,0) canto inferior esquerdo
             # X cresce para Leste, Y cresce para Norte
             #
-            # Layout visual (y=3 em cima, y=0 embaixo):
-            #
-            # y=3: (0,3)(1,3)(2,3)(3,3)
-            # y=2: (0,2)(1,2)(2,2)(3,2)
-            # y=1: (0,1)(1,1)(2,1)(3,1)
-            # y=0: (0,0)(1,0)(2,0)(3,0)  <- inicio aqui
-            #
-            # Percurso:
-            # linha 0: (0,0)->(1,0)->(2,0)->(3,0)  Leste
-            # sobe: (3,0)->(3,1)                    Norte
-            # linha 1: (3,1)->(2,1)->(1,1)->(0,1)  Oeste
-            # sobe: (0,1)->(0,2)                    Norte
-            # linha 2: (0,2)->(1,2)->(2,2)->(3,2)  Leste
-            # sobe: (3,2)->(3,3)                    Norte
-            # linha 3: (3,3)->(2,3)->(1,3)->(0,3)  Oeste
-            # VOLTA para celula ja visitada: (0,3)->(0,2) Sul (teste!)
+            # 
 
             celulas = [
-            # x,  y,  N      S      L      O      dir      vel   bat
-            # --- parte de (0,0) vai para Leste ---
-            (0,  0,  False, True,  False, True,  "Leste", 0.10, 99.5),
-            (1,  0,  False, True,  False, False, "Leste", 0.18, 99.0),
-            (2,  0,  False, True,  False, False, "Leste", 0.20, 98.5),
-            (3,  0,  False, True,  True,  False, "Norte", 0.22, 98.0),
-            # --- sobe coluna 3 ---
-            (3,  1,  False, False, True,  False, "Norte", 0.22, 97.5),
-            (3,  2,  False, False, True,  False, "Norte", 0.24, 97.0),
-            (3,  3,  True,  False, True,  False, "Oeste", 0.24, 96.5),
-            # --- linha 3 indo Oeste ---
-            (2,  3,  True,  False, False, False, "Oeste", 0.25, 96.0),
-            (1,  3,  True,  False, False, False, "Oeste", 0.25, 95.5),
-            (0,  3,  True,  False, False, True,  "Sul",   0.22, 95.0),
-            # --- desce coluna 0 ---
-            (0,  2,  False, False, False, True,  "Sul",   0.22, 94.5),
-            (0,  1,  False, False, False, True,  "Sul",   0.20, 94.0),
-            # --- chega em (0,0) ja visitada - VOLTA! ---
-            (0,  0,  False, True,  False, True,  "Leste", 0.15, 93.5),
-            # --- volta pelo caminho ja visitado ---
-            (1,  0,  False, True,  False, False, "Leste", 0.15, 93.0),
-            (2,  0,  False, True,  False, False, "Leste", 0.15, 92.5),
-        ]        
+    # x,  y,  N      S      L      O        dir      vel   bat
+    (0,  0,  False, True,  False, True,   "Leste", 0.10, 99.5),
+    (1,  0,  True,  True,  False, False,  "Leste", 0.18, 99.0),
+    (2,  0,  False, True,  False, False,  "Norte", 0.20, 98.5),
+    (2,  1,  False, False, False, True,   "Norte", 0.22, 98.0),
+    (2,  2,  False, False, False, True,   "Norte", 0.22, 97.5),
+    (2,  3,  True,  False, False, False,  "Oeste", 0.22, 97.0),
+    (1,  3,  True,  False, False, False,  "Oeste", 0.24, 96.5),
+    (0,  3,  True,  False, False, True,   "Sul",   0.24, 96.0),
+    (0,  2,  False, False, False, True,   "Sul",   0.22, 95.5),
+    (0,  1,  False, False, False, True,   "Leste", 0.22, 95.0),  # parede_leste=False para poder ir a (1,1)
+    (1,  1,  False, False, False, False,  "Sul",   0.20, 94.5),
+    # volta por caminho ja visitado
+    (0,  1,  False, False, False, True,   "Sul",   0.18, 94.0),
+    (0,  0,  False, True,  False, True,   "Leste", 0.15, 93.5),
+    (1,  0,  True,  True,  False, False,  "Leste", 0.15, 93.0),
+    (3,  0,  False, True,  True,  False,  "Norte", 0.20, 92.5),
+    (3,  1,  False, False, True,  True,   "Norte", 0.22, 92.0),
+    (3,  2,  False, False, True,  False,  "Norte", 0.24, 91.5),
+    (3,  3,  True,  False, True,  False,  "Oeste", 0.20, 91.0),
+]
 
             for x, y, norte, sul, leste, oeste, direcao, velocidade, bateria in celulas:
                 descricao = f"cell_discovered: ({x},{y}) dir={direcao}"

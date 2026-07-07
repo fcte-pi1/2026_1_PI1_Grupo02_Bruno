@@ -52,6 +52,7 @@ export default function Dashboard() {
                 setRastro([])
                 setPosicao({ x: 0, y: 0 })
                 setCelulasVisitadas(0)
+                celulasVisitadasRef.current = new Set()
 
             }
 
@@ -66,7 +67,11 @@ export default function Dashboard() {
                     ...prev,
                     [`${payload.linha},${payload.coluna}`]: payload
                 }))
-
+                const chave = `${payload.linha},${payload.coluna}`
+                if (!celulasVisitadasRef.current.has(chave)) {
+                    celulasVisitadasRef.current.add(chave)
+                    setCelulasVisitadas(celulasVisitadasRef.current.size)
+                }
                 setRastro(prev => {
                     const jaVisitada = prev.some(item => item.x === payload.x && item.y === payload.y)
                     if (jaVisitada) return prev
@@ -80,11 +85,7 @@ export default function Dashboard() {
                         novoRastro.push({ x: payload.x, y: payload.y, direcao: null })
                     }
 
-                    const chave = `${payload.linha},${payload.coluna}`
-                    if (!celulasVisitadasRef.current.has(chave)) {
-                        celulasVisitadasRef.current.add(chave)
-                        setCelulasVisitadas(celulasVisitadasRef.current.size)
-                    }
+
 
                     return novoRastro
                 })
