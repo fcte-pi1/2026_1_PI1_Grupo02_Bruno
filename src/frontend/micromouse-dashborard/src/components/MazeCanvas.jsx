@@ -182,7 +182,7 @@ export default function MazeCanvas({tamanhoGrid, fase, grid, setGrid, setRastro,
                         display: 'flex',
                         alignItems: 'center',
                         gap: '8px'
-                    }}>{fase_atual.label || 'Labirinto 01'}</h2>
+                    }}>{`${tamanhoGrid}x${tamanhoGrid}`}</h2>
                 </div>
                 <span style={{
                     backgroundColor: '#2e3347',
