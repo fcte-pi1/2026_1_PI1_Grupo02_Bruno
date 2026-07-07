@@ -123,6 +123,7 @@ async def simular():
 
             celulas = [
     # x,  y,  N      S      L      O        dir      vel   bat
+    # --- ida: (0,0) -> leste -> sobe coluna 2 -> linha 3 -> desce coluna 0 ---
     (0,  0,  False, True,  False, True,   "Leste", 0.10, 99.5),
     (1,  0,  True,  True,  False, False,  "Leste", 0.18, 99.0),
     (2,  0,  False, True,  False, False,  "Norte", 0.20, 98.5),
@@ -132,12 +133,15 @@ async def simular():
     (1,  3,  True,  False, False, False,  "Oeste", 0.24, 96.5),
     (0,  3,  True,  False, False, True,   "Sul",   0.24, 96.0),
     (0,  2,  False, False, False, True,   "Sul",   0.22, 95.5),
-    (0,  1,  False, False, False, True,   "Leste", 0.22, 95.0),  # parede_leste=False para poder ir a (1,1)
+    (0,  1,  False, False, False, True,   "Leste", 0.22, 95.0),
+    # --- beco sem saida em (1,1) ---
     (1,  1,  False, False, False, False,  "Sul",   0.20, 94.5),
-    # volta por caminho ja visitado
+    # --- volta por caminho ja visitado ---
     (0,  1,  False, False, False, True,   "Sul",   0.18, 94.0),
     (0,  0,  False, True,  False, True,   "Leste", 0.15, 93.5),
+    # --- continua explorando coluna 3 ---
     (1,  0,  True,  True,  False, False,  "Leste", 0.15, 93.0),
+    (2,  0,  False, True,  False, False,  "Leste", 0.18, 92.8),  # ← célula que faltava
     (3,  0,  False, True,  True,  False,  "Norte", 0.20, 92.5),
     (3,  1,  False, False, True,  True,   "Norte", 0.22, 92.0),
     (3,  2,  False, False, True,  False,  "Norte", 0.24, 91.5),

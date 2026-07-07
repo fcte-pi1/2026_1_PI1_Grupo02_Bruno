@@ -73,20 +73,14 @@ export default function Dashboard() {
                     setCelulasVisitadas(celulasVisitadasRef.current.size)
                 }
                 setRastro(prev => {
-                    const jaVisitada = prev.some(item => item.x === payload.x && item.y === payload.y)
-                    if (jaVisitada) return prev
-
                     const novoRastro = [...prev]
                     const ultima = novoRastro[novoRastro.length - 1]
-                    if (!ultima || ultima.x !== payload.x || ultima.y !== payload.y) {
-                        if (ultima) {
-                            ultima.direcao = calcularDirecaoMovimento(ultima, payload)
-                        }
-                        novoRastro.push({ x: payload.x, y: payload.y, direcao: null })
+
+                    if (ultima) {
+                        ultima.direcao = calcularDirecaoMovimento(ultima, payload)
                     }
 
-
-
+                    novoRastro.push({ x: payload.x, y: payload.y, direcao: null })
                     return novoRastro
                 })
             }
