@@ -17,6 +17,7 @@ export default function Dashboard() {
     const wsRef = useRef(null)
     const [conectado, setConectado] = useState(false)
     const [dimensaoLabirinto, setDimensaoLabirinto] = useState(4)
+    const celulasVisitadasRef = useRef(new Set())
 
     const calcularDirecaoMovimento = (origem, destino) => {
         const deltaX = destino.x - origem.x
@@ -47,35 +48,46 @@ export default function Dashboard() {
                 setBateria(payload.bateria)
                 setTempo(0)
                 setDimensaoLabirinto(payload.dimensao)
+                setGrid({})
+                setRastro([])
+                setPosicao({ x: 0, y: 0 })
+                setCelulasVisitadas(0)
 
             }
 
             if (tipo === "cell_discovered") {
-                // nova célula descoberta
                 setTempo(timestamp_ms)
                 setPosicao({ x: payload.x, y: payload.y })
                 setDirecao(payload.direcao)
                 setVelocidade(payload.velocidade)
                 setBateria(payload.bateria)
 
-                setGrid(prev => ({ ...prev, [`${payload.linha},${payload.coluna}`]: payload }))
+                setGrid(prev => ({
+                    ...prev,
+                    [`${payload.linha},${payload.coluna}`]: payload
+                }))
+
                 setRastro(prev => {
                     const jaVisitada = prev.some(item => item.x === payload.x && item.y === payload.y)
-                    if (jaVisitada) return prev  // não adiciona nada, só move a bolinha
-                    const novoRastro = [...prev]
+                    if (jaVisitada) return prev
 
+                    const novoRastro = [...prev]
                     const ultima = novoRastro[novoRastro.length - 1]
                     if (!ultima || ultima.x !== payload.x || ultima.y !== payload.y) {
                         if (ultima) {
                             ultima.direcao = calcularDirecaoMovimento(ultima, payload)
                         }
-
                         novoRastro.push({ x: payload.x, y: payload.y, direcao: null })
+                    }
+
+                    const chave = `${payload.linha},${payload.coluna}`
+                    if (!celulasVisitadasRef.current.has(chave)) {
+                        celulasVisitadasRef.current.add(chave)
+                        setCelulasVisitadas(celulasVisitadasRef.current.size)
                     }
 
                     return novoRastro
                 })
-                setCelulasVisitadas(prev => prev + 1)
             }
 
             if (tipo === 'run_finished') {
