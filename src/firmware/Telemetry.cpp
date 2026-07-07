@@ -26,10 +26,14 @@ const char* host = "0.0.0.0"; // <-- CONFIGURE O IP DO BACKEND AQUI
 const int port = 8000;        // Porta padrão do Django (não alterar)
 
 static uint32_t next_event_id = 1;
+// id_corrida_atual é atualizado via ACK do backend após run_started.
+// O backend retorna { "ack": N, "corrida_id": X } ao criar a corrida no banco.
+// Enquanto não houver corrida ativa, permanece 0.
+static uint32_t corrida_id_atual = 0;
 
 static void montarJsonBase(JsonDocument& doc, const char* tipo) {
     doc["event_id"] = next_event_id++;
-    doc["id_corrida"] = 1;
+    doc["id_corrida"] = corrida_id_atual;
     doc["timestamp_ms"] = millis();
     doc["tipo"] = tipo;
 }
@@ -50,11 +54,16 @@ void Telemetry::process() {
 void Telemetry::webSocketEvent(WStype_t type, uint8_t * payload, size_t length) {
     switch(type) {
         case WStype_TEXT: {
-            StaticJsonDocument<64> doc;
+            // Aumentamos o buffer para 128 bytes para comportar o campo corrida_id.
+            StaticJsonDocument<128> doc;
             DeserializationError error = deserializeJson(doc, payload);
             if (!error && doc.containsKey("ack")) {
-                // O servidor confirmou o recebimento do evento mais antigo!
-                // Agora sim, removemos do buffer com segurança.
+                // Se o ACK vier acompanhado de corrida_id (resposta ao run_started),
+                // atualiza o id da corrida ativa para os próximos eventos.
+                if (doc.containsKey("corrida_id")) {
+                    corrida_id_atual = doc["corrida_id"].as<uint32_t>();
+                }
+                // Remove o evento confirmado do buffer FIFO.
                 if(count > 0) {
                     head = (head + 1) % BUFFER_SIZE;
                     count--;
@@ -111,6 +120,8 @@ void Telemetry::sendCellDiscovered(int x, int y, bool p_norte, bool p_sul, bool 
     JsonObject payload = doc.createNestedObject("payload");
     payload["x"] = x;
     payload["y"] = y;
+    payload["linha"]  = y;
+    payload["coluna"] = x;
     payload["parede_norte"] = p_norte;
     payload["parede_sul"] = p_sul;
     payload["parede_leste"] = p_leste;
