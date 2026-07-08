@@ -1,231 +1,80 @@
+/**
+ * @file main.cpp
+ * @brief Ponto de entrada do firmware do Micromouse ESP32 com telemetria integrada.
+ *
+ * Fluxo de execução:
+ *
+ *  setup()
+ *    ├─ sensors_init()       → configura pinos dos sensores IR (TCRT5000)
+ *    ├─ dip_init()           → configura chave DIP START/MAPA_4X4/MAPA_8X8
+ *    ├─ battery_init()       → configura pino ADC do divisor de tensão da bateria
+ *    ├─ motors_init()        → configura ponte H (TB6612FNG), PWM e encoders
+ *    ├─ ota_init()           → sobe hotspot Wi-Fi ("rataturing") e servidor OTA
+ *    └─ Telemetry::init()    → abre conexão WebSocket com o backend
+ *
+ *  loop()
+ *    ├─ ota_loop()           → mantém servidor OTA e Wi-Fi vivos
+ *    ├─ Telemetry::process() → processa fila de eventos e mantém WebSocket ativo
+ *    └─ start() == HIGH?
+ *         └─ micromouse_run_com_telemetria() → executa navegação Flood Fill com telemetria
+ *
+ * ATENÇÃO: Antes de fazer upload, configure o IP do backend em Telemetry.cpp:
+ *   const char* host = "IP_DO_SEU_COMPUTADOR";  // Ex: "192.168.4.2"
+ *
+ * O hotspot da ESP32 usa a rede definida em credentials.h (padrão: "rataturing").
+ * Conecte o computador nessa rede e execute o backend Django antes de ligar o robô.
+ */
+
 #include <Arduino.h>
-#include <cstring>
-#include <array>
-#include <algorithm>
-#include <stdexcept>
 #include "hal.h"
 #include "motors.h"
 #include "sensors.h"
 #include "battery.h"
 #include "ota.h"
 #include "dip.h"
+#include "Telemetry.h"
 
-// seguindo a mesma lógica do código do simulador mms mas agora com funções declaradas e não apenas api do simulador
-constexpr int TAM = 16;
-constexpr int MAX = 255;
-constexpr char P_NORTE = 0x1;
-constexpr char P_LESTE = 0x2;
-constexpr char P_SUL   = 0x4;
-constexpr char P_OESTE = 0x8;
-enum class Direcao : int { norte = 0, leste = 1, sul = 2, oeste = 3};
-constexpr int NUM_DIRECOES = 4;
-constexpr int idx(Direcao d) { return static_cast<int>(d);}
-
-class Micromouse {
-public:
-    Micromouse() {reset();}
-
-    void run() {
-        detectar_paredes();
-        calcular_distancias();
-        ultima_checada = millis();
-        while (!centro(pos_x, pos_y)) {
-            detectar_paredes();
-            calcular_distancias();
-            melhor_celula();
-            if (millis() - ultima_checada >= INTERVALO_BATERIA) {
-                int bat = battery_porcentagem();
-                Serial.print("Nivel da Bateria: ");
-                Serial.print(bat);
-                Serial.println("%");
-                
-                ultima_checada = millis(); // Reseta o cronômetro
-            }
-            ota_loop(); // mantém o servidor OTA respondendo mesmo durante a corrida
-        }
-        // chegou ao centro para os motores
-        motors_parar();
-    }
-
-private:
-    unsigned long ultima_checada = 0;
-    const unsigned long INTERVALO_BATERIA = 30000;
-    int  distancia[TAM][TAM];
-    char paredes[TAM][TAM];
-    int  pos_x, pos_y;
-    Direcao direcao;
-    static constexpr std::array<int, NUM_DIRECOES> move_x = {0, 1,  0, -1};
-    static constexpr std::array<int, NUM_DIRECOES> move_y = {1, 0, -1, 0};
-    static constexpr std::array<Direcao, NUM_DIRECOES> oposto = {Direcao::sul, Direcao::oeste, Direcao::norte, Direcao::leste
-    };
-    
-
-    void reset() {
-        pos_x  = 0;
-        pos_y  = 0;
-        direcao  = Direcao::norte;
-        std::memset(paredes, 0, sizeof(paredes));
-        inicializar_bordas();
-    }
-
-    void inicializar_bordas() {
-        for (int i = 0; i < TAM; i++) {
-            paredes[i][TAM - 1]  |= P_NORTE;
-            paredes[i][0]  |= P_SUL;
-            paredes[TAM - 1][i] |= P_LESTE;
-            paredes[0][i]  |= P_OESTE;
-        }
-    }
-
-    bool centro(int x, int y) const {
-        return (x == 7 || x == 8) && (y == 7 || y == 8);
-    }
-
-    bool tem_parede(int x, int y, Direcao d) const {
-        return (paredes[x][y] & (1 << idx(d))) != 0;
-    }
-
-    void calcular_distancias() {
-        for (int x = 0; x < TAM; x++)
-            for (int y = 0; y < TAM; y++)
-                distancia[x][y] = centro(x, y) ? 0 : MAX;
-        bool alteracao = true;
-        while (alteracao) {
-            alteracao = false;
-            for (int x = 0; x < TAM; x++) {
-                for (int y = 0; y < TAM; y++) {
-                    if (centro(x, y)) continue;
-
-                    int melhor_vizinho = MAX;
-                    auto verificar = [&](Direcao d, int nx, int ny) {
-                        if (!tem_parede(x, y, d) && nx >= 0 && nx < TAM && ny >= 0 && ny < TAM)
-                            melhor_vizinho = std::min(melhor_vizinho, distancia[nx][ny]);
-                    };
-                    verificar(Direcao::norte, x, y + 1);
-                    verificar(Direcao::sul, x, y - 1);
-                    verificar(Direcao::leste, x + 1, y);
-                    verificar(Direcao::oeste, x - 1, y);
-
-                    int nova = (melhor_vizinho == MAX) ? MAX : melhor_vizinho + 1;
-                    if (nova < distancia[x][y]) {
-                        distancia[x][y] = nova;
-                        alteracao = true;
-                    }
-                }
-            }
-        }
-    }
-    // registra uma parede detectada na memória do labirinto
-    void adicionar_parede(int x, int y, Direcao d) {
-        paredes[x][y] |= (1 << idx(d));
-        int nx = x + move_x[idx(d)];
-        int ny = y + move_y[idx(d)];
-        if (nx >= 0 && nx < TAM && ny >= 0 && ny < TAM)
-            paredes[nx][ny] |= (1 << idx(oposto[idx(d)]));
-    }
-
-    Direcao relativa_para_absoluta(Direcao dir_mouse, int giro) const {
-        return static_cast<Direcao>((idx(dir_mouse) + giro) % NUM_DIRECOES);
-    }
-
-    // detecção de paredes
-    void detectar_paredes() {
-        if (sensor_parede_frente())
-            adicionar_parede(pos_x, pos_y, relativa_para_absoluta(direcao, 0));
-        if (sensor_parede_direita())
-            adicionar_parede(pos_x, pos_y, relativa_para_absoluta(direcao, 1));
-        if (sensor_parede_esquerda())
-            adicionar_parede(pos_x, pos_y, relativa_para_absoluta(direcao, 3));
-    }
-
-    // antes chamava apenas algumas funcoes de virar para a direita e para a esquerda agora chama funcoes reais do robo real
-    bool melhor_celula() {
-        int melhor_direcao  = -1;
-        int menor_distancia  = MAX + 1;
-
-        for (int d = 0; d < NUM_DIRECOES; d++) {
-            auto dir = static_cast<Direcao>(d);
-            if (tem_parede(pos_x, pos_y, dir)) continue;
-            int nx = pos_x + move_x[d];
-            int ny = pos_y + move_y[d];
-            if (distancia[nx][ny] < menor_distancia) {
-                menor_distancia = distancia[nx][ny];
-                melhor_direcao  = d;
-            }
-        }
-
-        if (melhor_direcao == -1) return false;
-        // gira até apontar para a direção desejada
-        while (idx(direcao) != melhor_direcao) {
-            int diferenca = (melhor_direcao - idx(direcao) + NUM_DIRECOES) % NUM_DIRECOES;
-            if (diferenca == 1) {
-                motors_girar_direita();                         
-                direcao = static_cast<Direcao>((idx(direcao) + 1) % NUM_DIRECOES);
-            } else {
-                motors_girar_esquerda();                        
-                direcao = static_cast<Direcao>((idx(direcao) + 3) % NUM_DIRECOES);
-            }
-        }
-        motors_avancar_celula();                               
-        pos_x += move_x[melhor_direcao];
-        pos_y += move_y[melhor_direcao];
-        return true;
-    }
-};
-
-bool teste_executado = false; 
+void micromouse_run_com_telemetria();
 
 void setup() {
     Serial.begin(115200);
+
+    // Inicialização do hardware
     sensors_init();
     dip_init();
     battery_init();
     motors_init();
+
+    // Inicialização da rede: sobe hotspot Wi-Fi "rataturing" e servidor OTA em /update
     ota_init();
+
+    // Inicialização da telemetria: abre WebSocket para o backend Django
+    // ATENÇÃO: o host em Telemetry.cpp deve apontar para o IP correto do servidor
+    Telemetry::init();
+
+    Serial.println("=== Micromouse pronto ===");
+    Serial.println("Aguardando chave START...");
+    dip_print();
 }
 
 void loop() {
-    ota_loop(); 
+    // Mantém o servidor OTA respondendo (necessário para atualizações OTA)
+    ota_loop();
 
-    if (start() && !teste_executado) {
-        
-        int vel_teste = 150; // Velocidade segura 
-        
-        // 1. TESTE ESQUERDA - FRENTE
-        digitalWrite(MOT_ESQ_INA1, HIGH);
-        digitalWrite(MOT_ESQ_INA2, LOW);
-        ledcWrite(MOT_ESQ_PWMA, vel_teste);
-        delay(2000);
-        ledcWrite(MOT_ESQ_PWMA, 0); // Desliga
-        delay(2000); // Pausa para você observar
+    // Processa o buffer de telemetria e mantém a conexão WebSocket ativa
+    Telemetry::process();
 
-        // 2. TESTE ESQUERDA - TRÁS
-        digitalWrite(MOT_ESQ_INA1, LOW);
-        digitalWrite(MOT_ESQ_INA2, HIGH);
-        ledcWrite(MOT_ESQ_PWMA, vel_teste);
-        delay(2000);
-        ledcWrite(MOT_ESQ_PWMA, 0);
-        delay(2000);
+    // Aguarda a chave DIP START (pino 27) ser ativada para iniciar a corrida
+    if (start()) {
+        Serial.println("=== START ativado — iniciando corrida ===");
+        micromouse_run_com_telemetria();
+        Serial.println("=== Corrida finalizada — aguardando reset ===");
 
-        // 3. TESTE DIREITA - FRENTE
-        digitalWrite(MOT_DIR_INB1, HIGH);
-        digitalWrite(MOT_DIR_INB2, LOW);
-        ledcWrite(MOT_DIR_PWMB, vel_teste);
-        delay(2000);
-        ledcWrite(MOT_DIR_PWMB, 0);
-        delay(2000);
-
-        // 4. TESTE DIREITA - TRÁS
-        digitalWrite(MOT_DIR_INB1, LOW);
-        digitalWrite(MOT_DIR_INB2, HIGH);
-        ledcWrite(MOT_DIR_PWMB, vel_teste);
-        delay(2000);
-        ledcWrite(MOT_DIR_PWMB, 0);
-
-        teste_executado = true; // Trava para não repetir
-    }
-
-    if (!start()) {
-        teste_executado = false; // Rearma quando você desligar a chave
+        // Aguarda o operador desligar a chave START antes de permitir nova corrida
+        while (start()) {
+            ota_loop();
+            Telemetry::process();
+            delay(100);
+        }
     }
 }
