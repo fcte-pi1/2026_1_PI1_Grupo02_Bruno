@@ -57,6 +57,10 @@
 #define VEL_BASE  160
 #define VEL_GIRO  130
 #define VEL_MAX   220
+#define DELAY_POS_MOVIMENTO_MS  2000
+#define TEMPO_AVANCO_CELULA_MS  700
+#define PASSO_CONTROLE_MS       20
+#define CORRECAO_KP_LATERAL     8.0f
 
 // ── Parâmetros dos sensores IR ────────────────────────────────────────────
 // Offset sistemático medido na bancada: sensores leem ~1 cm a menos que a régua
@@ -83,4 +87,4 @@
 // ── Chave DIP ───────────────────────────────────────────────────────────
 #define START 27
 #define MAPA_4X4 14
-#define MAPA_8X8 13 
+#define MAPA_8X8 13
