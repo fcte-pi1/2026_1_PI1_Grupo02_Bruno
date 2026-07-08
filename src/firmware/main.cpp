@@ -16,7 +16,7 @@
  *    ├─ ota_loop()           → mantém servidor OTA e Wi-Fi vivos
  *    ├─ Telemetry::process() → processa fila de eventos e mantém WebSocket ativo
  *    └─ start() == HIGH?
- *         └─ micromouse_run() → executa navegação Flood Fill com telemetria
+ *         └─ micromouse_run_com_telemetria() → executa navegação Flood Fill com telemetria
  *
  * ATENÇÃO: Antes de fazer upload, configure o IP do backend em Telemetry.cpp:
  *   const char* host = "IP_DO_SEU_COMPUTADOR";  // Ex: "192.168.4.2"
@@ -34,8 +34,7 @@
 #include "dip.h"
 #include "Telemetry.h"
 
-// Declaração da função de navegação definida em mouse.cpp
-void micromouse_run();
+void micromouse_run_com_telemetria();
 
 void setup() {
     Serial.begin(115200);
@@ -68,7 +67,7 @@ void loop() {
     // Aguarda a chave DIP START (pino 27) ser ativada para iniciar a corrida
     if (start()) {
         Serial.println("=== START ativado — iniciando corrida ===");
-        micromouse_run();
+        micromouse_run_com_telemetria();
         Serial.println("=== Corrida finalizada — aguardando reset ===");
 
         // Aguarda o operador desligar a chave START antes de permitir nova corrida
