@@ -4,7 +4,7 @@ Este documento detalha o desenvolvimento mecânico, os requisitos de projeto, a 
 
 ---
 
-## 📐 Abordagem Multidisciplinar & Requisitos de Design
+## Abordagem Multidisciplinar & Requisitos de Design
 
 O design mecânico do Micromouse foi inteiramente concebido sob a ótica da **multidisciplinaridade**. O chassi não atua apenas como suporte físico, mas sim como uma interface otimizada para acomodar de forma compacta e estratégica os subsistemas das outras áreas:
 
