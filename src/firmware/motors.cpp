@@ -39,7 +39,7 @@ static void set_motor_esq(int pwm) {
     ledcWrite(MOT_ESQ_PWMA, constrain(pwm, 0, 255));
 }
 
-// mesma coisa que o da esquerda só que pra roda direita
+
 static void set_motor_dir(int pwm) {
     if (pwm >= 0) {
         digitalWrite(MOT_DIR_INB1, HIGH); 
@@ -78,10 +78,10 @@ void motors_init() {
 void motors_parar() {
     set_motor_esq(0);
     set_motor_dir(0);
+    delay(DELAY_POS_MOVIMENTO_MS);   
 }
 
-// essa é a função principal que faz o robô andar até o alvo e corrige a trajetória com o pid
-// recebe quantos pulsos cada roda tem que dar (positivo frente, negativo ré)
+
 static void mover(long alvo_esq, long alvo_dir, bool usar_sensor = false) {
     // desliga as interrupções rapidinho só pra zerar os contadores sem dar problema
     noInterrupts();
@@ -130,28 +130,71 @@ static void mover(long alvo_esq, long alvo_dir, bool usar_sensor = false) {
         int pwm_esq = esq_ok ? 0 : (int)(VEL_BASE - correcao * 50);
         int pwm_dir = dir_ok ? 0 : (int)(VEL_BASE + correcao * 50);
 
-        // manda a velocidade pros motores com um limite pra nao passar do maximo
+        
         set_motor_esq(constrain(pwm_esq, 0, VEL_MAX) * sinal_esq);
         set_motor_dir(constrain(pwm_dir, 0, VEL_MAX) * sinal_dir);
         delay(2);   
     }
 
-    // chegou no alvo entao manda parar e da um tempinho pra ele estabilizar
+ 
     motors_parar();
     delay(80);   
 }
 
-// manda o robo andar a distancia de uma celula inteira pra frente
 void motors_avancar_celula() {
-    mover(PULSOS_CELULA, PULSOS_CELULA, true);
+    const int vel_base = 100;
+
+    digitalWrite(MOT_ESQ_INA1, HIGH);
+    digitalWrite(MOT_ESQ_INA2, LOW);
+    digitalWrite(MOT_DIR_INB1, LOW);
+    digitalWrite(MOT_DIR_INB2, HIGH);
+    ledcWrite(MOT_DIR_PWMA, vel_base);
+    ledcWrite(MOT_DIR_PWMB, vel_base);
+    delay (700);
+    ledcWrite(MOT_ESQ_PWMA, 0); 
+    ledcWrite(MOT_DIR_PWMB, 0);
+    delay(DELAY_POS_MOVIMENTO_MS);   
 }
 
-// gira 90 graus no proprio eixo pra direita (uma roda vai pra frente e a outra pra tras)
 void motors_girar_direita() {
-    mover(+PULSOS_GIRO_90, -PULSOS_GIRO_90);
+    int vel_teste = 150;
+    digitalWrite(MOT_ESQ_INA1, LOW);
+    digitalWrite(MOT_ESQ_INA2, HIGH);
+    digitalWrite(MOT_DIR_INB1, HIGH);
+    digitalWrite(MOT_DIR_INB2, LOW);
+    ledcWrite(MOT_ESQ_PWMA, vel_teste);
+    ledcWrite(MOT_DIR_PWMB, vel_teste);
+    delay(288);
+    ledcWrite(MOT_ESQ_PWMA, 0);
+    ledcWrite(MOT_DIR_PWMB, 0);
+    delay(DELAY_POS_MOVIMENTO_MS);   
 }
 
-// gira 90 graus no proprio eixo pra esquerda
+// gira 270 graus no proprio eixo pra direita
 void motors_girar_esquerda() {
-    mover(-PULSOS_GIRO_90, +PULSOS_GIRO_90);
+    int vel_teste = 150;
+    digitalWrite(MOT_ESQ_INA1, LOW);
+    digitalWrite(MOT_ESQ_INA2, HIGH);
+    ledcWrite(MOT_ESQ_PWMA, vel_teste);
+    digitalWrite(MOT_DIR_INB1, HIGH);
+    digitalWrite(MOT_DIR_INB2, LOW);
+    ledcWrite(MOT_DIR_PWMB, vel_teste);
+    delay(870);
+    ledcWrite(MOT_ESQ_PWMA, 0); 
+    ledcWrite(MOT_DIR_PWMB, 0);
+    delay(DELAY_POS_MOVIMENTO_MS);   
+}
+
+void motors_girar_tras() {
+    int vel_teste = 150;
+    digitalWrite(MOT_ESQ_INA1, LOW);
+    digitalWrite(MOT_ESQ_INA2, HIGH);
+    ledcWrite(MOT_ESQ_PWMA, vel_teste);
+    digitalWrite(MOT_DIR_INB1, HIGH);
+    digitalWrite(MOT_DIR_INB2, LOW);
+    ledcWrite(MOT_DIR_PWMB, vel_teste);
+    delay(585);
+    ledcWrite(MOT_ESQ_PWMA, 0);
+    ledcWrite(MOT_DIR_PWMB, 0);
+    delay(DELAY_POS_MOVIMENTO_MS);   
 }
