@@ -1,4 +1,4 @@
-# 🏗️ Núcleo de Estruturas & Mecânica — Micromouse
+# Núcleo de Estruturas & Mecânica — Micromouse
 
 Este documento detalha o desenvolvimento mecânico, os requisitos de projeto, a seleção de materiais e o processo de montagem tanto do chassi do robô quanto do labirinto de testes, enfatizando o caráter multidisciplinar integrado à eletrônica e alimentação.
 
@@ -15,15 +15,15 @@ O design mecânico do Micromouse foi inteiramente concebido sob a ótica da **mu
 
 ---
 
-## 🧱 Especificações Técnicas e Dimensões
+## Especificações Técnicas e Dimensões
 
-### 🤖 O Chassi
+### O Chassi
 * **Material:** Impressão 3D (Polímero).
 * **Dimensões Gerais:** 100 mm de comprimento × 70 mm de largura.
 * **Pilares de Sustentação:** 16 mm de altura (espaçamento entre os andares).
 * **Rodas:** 43 mm de diâmetro × 18 mm de largura.
 
-### 🧱 O Labirinto (Concepção Modular)
+### O Labirinto (Concepção Modular)
 O labirinto de testes adota uma filosofia de **modularidade** para montagem e desmontagem rápida, crucial para os testes práticos da equipe de software. Ele foi projetado para mitigar interferências nos sensores ópticos e de distância do robô:
 * **Dimensões da Base Principal:** 795 × 795 mm.
 * **Malha da Base:** Matriz contendo **25 furos** para acoplamento dinâmico.
@@ -36,7 +36,7 @@ O labirinto de testes adota uma filosofia de **modularidade** para montagem e de
 
 ---
 
-## 🛠️ Processo de Montagem
+## Processo de Montagem
 
 ### Montagem do Robô:
 1.  **Fixação dos Motores:** Os dois motores N20 são posicionados no primeiro andar e firmados utilizando **clamps parafusados**, o que elimina folgas mecânicas e garante rigidez durante acelerações bruscas.
@@ -50,14 +50,14 @@ O labirinto de testes adota uma filosofia de **modularidade** para montagem e de
 
 ---
 
-## 📊 Análise Estrutural Computacional (ANSYS)
+## Análise Estrutural Computacional (ANSYS)
 
 Para garantir a confiabilidade do robô antes da fabricação dos componentes físicos, o modelo tridimensional do chassi foi submetido a uma **Análise Estrutural Numérica no software ANSYS**. 
 O estudo focou na simulação estática e dinâmica para verificar o comportamento do polímero impresso sob a ação das cargas reais do projeto (peso das baterias, placas eletrotécnicas, forças de aceleração e frenagem dos motores N20). A análise validou que a espessura das paredes e a disposição dos pilares de 16 mm suportam os esforços operacionais com margem de segurança adequada, evitando trincas ou deformações excessivas durante as manobras.
 
 ---
 
-## 📂 Localização dos Arquivos no Repositório
+## Localização dos Arquivos no Repositório
 
 Toda a modelagem 3D (arquivos `.CATPart`), simulações, arquivos de impressão e detalhamentos estão centralizados na pasta de mecânica do projeto:
 
